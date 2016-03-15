@@ -4,9 +4,17 @@ This is description of pgif
 
 
 ## Table of Contents  
+- [Requirements](#Requirements)  
 - [Installation](#Installation)  
 - [Usage](#Usage)  
 
+## Requirements
+<a name="Requirements"/>
+- Django 1.9.4
+- Django Rest Framework
+- Mysql
+- Gevent
+- ffmpeg
 
 
 ## Installation
@@ -41,6 +49,15 @@ This is description of pgif
     $ pip install wheel
     $ pip install setuptools 'cython>=0.23.4' git+git://github.com/gevent/gevent.git#egg=gevent
 ```
+
+- ffmpeg
+```shell
+    $ sudo add-apt-repository ppa:mc3man/trusty-media
+    $ sudo apt-get update
+    $ sudo apt-get dist-upgrade
+    $ sudo apt-get install ffmpeg
+```
+
 
 
 
