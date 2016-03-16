@@ -1,3 +1,48 @@
+a:hover, button:hover {
+  -khtml-transition: all 0.6s linear;
+  -webkit-transition: all 0.6s linear;
+  -moz-transition: all 0.6s linear;
+  -ms-transition: all 0.6s linear;
+  -o-transition: all 0.6s linear;
+  transition: all 0.6s linear; }
 
+.navbar {
+  -khtml-border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0; }
+
+.wrapper {
+  margin: 0;
+  padding: 0; }
+  .wrapper .wrap-1 {
+    width: 100%;
+    height: 630px;
+    overflow: hidden;
+    background-size: 100%;
+    background: radial-gradient(ellipse at center, #1e5799 0%, rgba(54, 151, 142, 0.8) 0%, #0C526C 100%, #3d7eaa 100%, #182848 100%, #6e48aa 100%, #6e48aa 100%); }
+    .wrapper .wrap-1 .w1-image {
+      width: 100%;
+      margin: 0 auto;
+      margin-top: 145px;
+      float: right;
+      text-align: center; }
+      .wrapper .wrap-1 .w1-image img {
+        width: 100%; }
+    .wrapper .wrap-1 .description {
+      margin-top: 200px;
+      color: white;
+      padding: 5px; }
+      .wrapper .wrap-1 .description h2 {
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        font-weight: 200;
+        font-size: 40px; }
+      .wrapper .wrap-1 .description h5 {
+        line-height: 1.4;
+        font-weight: 400;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+        font-size: 18px; }
 
 /*# sourceMappingURL=convert.css.map */
