@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework_swagger',
-    'rest_framework'
+    'rest_framework',
+    'convert'
 ]
 
 MIDDLEWARE_CLASSES = [
