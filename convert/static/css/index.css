@@ -8010,23 +8010,29 @@ a:hover, button:hover {
       .wrapper .wrap-1 .description h2 {
         text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
         font-weight: 200;
-        font-size: 40px; }
+        font-size: 34px; }
       .wrapper .wrap-1 .description h5 {
         line-height: 1.4;
         font-weight: 400;
         text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
         font-size: 18px; }
+        .wrapper .wrap-1 .description h5 p {
+          text-align: left;
+          text-indent: 30px;
+          font-size: 16px; }
   .wrapper .header-text {
     text-transform: uppercase;
     font-weight: 200;
-    color: #333;
+    color: #666;
     margin-bottom: 20px;
-    font-size: 30px;
+    font-size: 26px;
     position: relative;
     line-height: 24px; }
   .wrapper .wp-desc {
     padding: 30px 0; }
     .wrapper .wp-desc p {
+      text-indent: 30px;
+      color: #666;
       margin-top: 30px;
       line-height: 28px;
       font-size: 15px;
@@ -8065,8 +8071,8 @@ footer {
       text-decoration: none; }
   footer .fa {
     display: inline-block;
-    background: #DEDEDE;
-    color: #50535D;
+    background: #dfdfdf;
+    color: #888;
     font-size: 12px;
     text-decoration: none;
     width: 26px;
@@ -8083,7 +8089,7 @@ footer {
     transition: all 0.6s ease-in-out; }
     footer .fa:hover {
       text-decoration: none;
-      background: #b93434;
+      background: #984949;
       color: #fff; }
 
 /*# sourceMappingURL=index.css.map */

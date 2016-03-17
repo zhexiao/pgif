@@ -1,50 +1,52 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-
-
 {% block title %}home{% endblock %}
-
 {% block content %}
+    <!-- Top image -->
     <div class="wrap-1">
         <div class="container">
             <div class="col-md-7">
-                <div class="w1-image">
+                <div class="w1-image top-content-1">
                     <img src="{% static 'images/mac1.png' %}">
                 </div>
             </div>
+
             <div class="col-md-5">
-                <div class="description text-center">
-                    <h2>Video Convert</h2>
+                <div class="description text-center top-content-2">
+                    <h2>
+                        <i class="fa fa-video-camera"></i>
+                        Video Convert
+                    </h2>
                     <br>
                     <h5>
-                        <div>
+                        <p>
                             This web application is aim to convert video to different type of medias. You can simply using it through upload your video or paste a video link.
-                        </div> 
+                        </p> 
                         <br>
-                        <div>
+                        <p>
                             Currently, this web application support convert video to <i>gif</i> and <i>small size video</i>.
-                        </div>
+                        </p>
                     </h5>
-                    <div class="w1-buttons">
-                        <button class="btn btn-primary">
-                            <i class="fa fa-download"></i>
-                            Download
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Video Convert Wrap -->
     <div class="wrap-2">
 
     </div>
 
+
+    <!-- info 1 -->
     <div class="wrap-3">
         <div class="container">
             <div class="col-md-5">
                 <div class="description wp-desc">
-                    <h4 class="header-text text-center">It's beautiful</h4>
+                    <h4 class="header-text text-center">
+                        <i class="fa fa-rocket"></i>
+                        It's Fast
+                    </h4>
                     <p>
                         By downloading the resource with a Personal License you are granted the use of it under the conditions featured in the above table. Ownership stays with Creative Tim, along with the copyright holders and you must abide the following rights and restrictions.
                     </p>
@@ -62,6 +64,7 @@
     </div>
 
 
+    <!-- info 2 -->
     <div class="wrap-4">
         <div class="container">
             <div class="col-md-6">
@@ -71,7 +74,10 @@
             </div>
             <div class="col-md-5 col-md-offset-1">
                 <div class="description wp-desc">
-                    <h4 class="header-text text-center">Beautiful colors</h4>
+                    <h4 class="header-text text-center">
+                        <i class="fa fa-picture-o"></i>
+                        It's Quality
+                    </h4>
                     <p>
                         This pack is a demo of our latest product. You can download it and use it in any project of yours.
                     </p>
@@ -84,11 +90,15 @@
     </div>
 
 
+    <!-- info 3 -->
     <div class="wrap-5">
         <div class="container">
             <div class="col-md-5">
                 <div class="description wp-desc">
-                    <h4 class="header-text text-center">Pixel Perfect</h4>
+                    <h4 class="header-text text-center">
+                        <i class="fa fa-simplybuilt"></i>
+                        It's Simply
+                    </h4>
                     <p>
                         This pack is a demo of our latest product. You can download it and use it in any project of yours.
                     </p>
@@ -105,13 +115,20 @@
         </div>
     </div>
 
+
+    <!-- image scroll -->
     <div class="wrap-6">
         <div class="img-scroll-holder" data-image="{% static 'images/office-wallpaper.jpg' %}"></div>
     </div>
 
+
+    <!-- carousel -->
     <div class="wrap-7 clearfix">
         <div class="container">
-            <h3 class="text-center">Who Use It</h3>
+            <h3 class="text-center">
+                <i class="fa fa-users"></i>
+                Who Use It
+            </h3>
             <div class="owl-carousel owl-theme">
                 <div class="item">
                     <img src="{% static 'images/client-logo1.png' %}" >
@@ -150,6 +167,20 @@
         window.sr = ScrollReveal({
             reset:true
         }).reveal('.wrap-3, .wrap-4, .wrap-5');
+
+        sr.reveal('.top-content-1', {
+            delay    : 200,
+            distance : '90px',
+            origin : 'bottom',
+            scale    : 1.1
+        });
+
+        sr.reveal('.top-content-2', {
+            delay    : 200,
+            origin : 'top',
+            distance : '90px',
+            scale    : 1.1
+        });
 
         // image scroll
         $('.img-scroll-holder').imageScroll({
