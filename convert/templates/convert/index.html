@@ -35,4 +35,143 @@
             </div>
         </div>
     </div>
+
+    <div class="wrap-2">
+
+    </div>
+
+    <div class="wrap-3">
+        <div class="container">
+            <div class="col-md-5">
+                <div class="description wp-desc">
+                    <h4 class="header-text text-center">It's beautiful</h4>
+                    <p>
+                        By downloading the resource with a Personal License you are granted the use of it under the conditions featured in the above table. Ownership stays with Creative Tim, along with the copyright holders and you must abide the following rights and restrictions.
+                    </p>
+                    <p>
+                        This pack is a demo of our latest product. You can download it and use it in any project of yours. 
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-7">
+               <div class="w2-img">
+                    <img src="{% static 'images/mac2.png' %}">
+               </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="wrap-4">
+        <div class="container">
+            <div class="col-md-6">
+                <div class="w2-img">
+                     <img src="{% static 'images/mac3.jpg' %}">
+                </div>
+            </div>
+            <div class="col-md-5 col-md-offset-1">
+                <div class="description wp-desc">
+                    <h4 class="header-text text-center">Beautiful colors</h4>
+                    <p>
+                        This pack is a demo of our latest product. You can download it and use it in any project of yours.
+                    </p>
+                    <p>
+                        By downloading the resource with a Personal License you are granted the use of it under the conditions featured in the above table. Ownership stays with Creative Tim, along with the copyright holders and you must abide the following rights and restrictions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="wrap-5">
+        <div class="container">
+            <div class="col-md-5">
+                <div class="description wp-desc">
+                    <h4 class="header-text text-center">Pixel Perfect</h4>
+                    <p>
+                        This pack is a demo of our latest product. You can download it and use it in any project of yours.
+                    </p>
+                    <p>
+                        By downloading the resource with a Personal License you are granted the use of it under the conditions featured in the above table. Ownership stays with Creative Tim, along with the copyright holders and you must abide the following rights and restrictions.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-1">
+                <div class="w2-img">
+                     <img src="{% static 'images/mac4.jpg' %}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap-6">
+        <div class="img-scroll-holder" data-image="{% static 'images/office-wallpaper.jpg' %}"></div>
+    </div>
+
+    <div class="wrap-7 clearfix">
+        <div class="container">
+            <h3 class="text-center">Who Use It</h3>
+            <div class="owl-carousel owl-theme">
+                <div class="item">
+                    <img src="{% static 'images/client-logo1.png' %}" >
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/client-logo2.png' %}" >
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/client-logo3.png' %}" >
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/client-logo4.png' %}" >
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/client-logo1.png' %}" >
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/client-logo2.png' %}" >
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/client-logo3.png' %}" >
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/client-logo4.png' %}" >
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="{% static "js/owl.carousel.min.js" %}"></script>
+    <script src="{% static "js/jquery.imageScroll.min.js" %}"></script>
+    <script src="{% static "js/scrollreveal.min.js" %}"></script>
+    <script type="text/javascript">
+        // content scroll
+        window.sr = ScrollReveal({
+            reset:true
+        }).reveal('.wrap-3, .wrap-4, .wrap-5');
+
+        // image scroll
+        $('.img-scroll-holder').imageScroll({
+            coverRatio: 0.5
+        });
+
+        // carousel
+        $('.owl-carousel').owlCarousel({
+            loop:true,
+            margin:10,
+            nav:false,
+            responsive:{
+                0:{
+                    items:1
+                },
+                600:{
+                    items:3
+                },
+                1000:{
+                    items:5
+                }
+            }
+        })
+    </script>
 {% endblock %}

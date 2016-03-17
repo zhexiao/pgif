@@ -7,12 +7,19 @@
     #{$property}: $value;
 }
 
+body{
+    font-family: 'Open Sans', sans-serif;
+}
+
 a:hover, button:hover{
     @include css3(transition, all 0.6s linear);
 }
 
 .navbar{
     @include css3(border-radius, 0);
+    margin-bottom: 0;
+    background-color:#fff;
+    border:1px solid #fff;
 }
 
 
@@ -57,5 +64,107 @@ a:hover, button:hover{
                 font-size: 18px;
             }
         }
+    }
+
+    .header-text {
+        text-transform: uppercase;
+        font-weight: 200;
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 30px;
+        position: relative;
+        line-height: 24px;
+    }
+
+    .wp-desc{
+        padding: 30px 0;
+
+        p{
+           margin-top: 30px;
+           line-height: 28px;
+           font-size: 15px;
+           font-weight: 200;
+        }
+    }
+
+    .wrap-2{
+        height:300px;
+    }
+
+    .wrap-3, .wrap-4, .wrap-5{
+        padding: 100px 0;
+    }
+
+    .w2-img{
+        img{
+            width:100%;
+            height: auto;
+            border-radius: 10px;
+        }
+    }
+
+    .img-holder{
+        width:100%;
+    }
+
+    .wrap-7{
+        padding:70px 0 100px;
+        overflow: hidden;
+
+        h3{
+            text-transform:uppercase;
+            margin-bottom: 30px;
+            color:#888;
+        }
+
+        .owl-item{       
+            opacity: .7;
+        }
+    }
+}
+
+
+footer{
+    background-color: #f8f8f8;
+    border-top: 1px solid #e7e7e7;
+    padding: 20px;
+    color: #333;
+    font-size: 13px;
+
+
+    .footer-mid {
+        span{            
+            display: block;
+        }
+    }
+
+    a{
+        text-decoration: none;
+
+        &:hover, &:active, &:focus, &:visited{
+            text-decoration:none;
+        }
+    }
+
+    .fa{
+        display: inline-block;
+        background: #DEDEDE;
+        color: #50535D;
+        font-size: 12px;
+        text-decoration: none;
+        width: 26px;
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+        margin-right: 10px;
+        cursor: pointer;
+        @include css3(transition,  all 0.6s ease-in-out);
+     
+
+        &:hover{
+            text-decoration: none;
+            background: #b93434;
+            color:#fff;
+        };
     }
 }

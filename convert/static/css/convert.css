@@ -1,3 +1,6 @@
+body {
+  font-family: 'Open Sans', sans-serif; }
+
 a:hover, button:hover {
   -khtml-transition: all 0.6s linear;
   -webkit-transition: all 0.6s linear;
@@ -12,7 +15,10 @@ a:hover, button:hover {
   -moz-border-radius: 0;
   -ms-border-radius: 0;
   -o-border-radius: 0;
-  border-radius: 0; }
+  border-radius: 0;
+  margin-bottom: 0;
+  background-color: #fff;
+  border: 1px solid #fff; }
 
 .wrapper {
   margin: 0;
@@ -44,5 +50,74 @@ a:hover, button:hover {
         font-weight: 400;
         text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
         font-size: 18px; }
+  .wrapper .header-text {
+    text-transform: uppercase;
+    font-weight: 200;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 30px;
+    position: relative;
+    line-height: 24px; }
+  .wrapper .wp-desc {
+    padding: 30px 0; }
+    .wrapper .wp-desc p {
+      margin-top: 30px;
+      line-height: 28px;
+      font-size: 15px;
+      font-weight: 200; }
+  .wrapper .wrap-2 {
+    height: 300px; }
+  .wrapper .wrap-3, .wrapper .wrap-4, .wrapper .wrap-5 {
+    padding: 100px 0; }
+  .wrapper .w2-img img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px; }
+  .wrapper .img-holder {
+    width: 100%; }
+  .wrapper .wrap-7 {
+    padding: 70px 0 100px;
+    overflow: hidden; }
+    .wrapper .wrap-7 h3 {
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      color: #888; }
+    .wrapper .wrap-7 .owl-item {
+      opacity: .7; }
+
+footer {
+  background-color: #f8f8f8;
+  border-top: 1px solid #e7e7e7;
+  padding: 20px;
+  color: #333;
+  font-size: 13px; }
+  footer .footer-mid span {
+    display: block; }
+  footer a {
+    text-decoration: none; }
+    footer a:hover, footer a:active, footer a:focus, footer a:visited {
+      text-decoration: none; }
+  footer .fa {
+    display: inline-block;
+    background: #DEDEDE;
+    color: #50535D;
+    font-size: 12px;
+    text-decoration: none;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    margin-right: 10px;
+    cursor: pointer;
+    -khtml-transition: all 0.6s ease-in-out;
+    -webkit-transition: all 0.6s ease-in-out;
+    -moz-transition: all 0.6s ease-in-out;
+    -ms-transition: all 0.6s ease-in-out;
+    -o-transition: all 0.6s ease-in-out;
+    transition: all 0.6s ease-in-out; }
+    footer .fa:hover {
+      text-decoration: none;
+      background: #b93434;
+      color: #fff; }
 
 /*# sourceMappingURL=convert.css.map */

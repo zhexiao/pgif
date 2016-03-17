@@ -13,6 +13,7 @@
 </head>
 
 <body>
+    <!-- header navbar -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -40,9 +41,37 @@
         </div>
     </nav>
     
+    <!-- main content  -->
     <div class="container-fluid wrapper">
         {% block content %}{% endblock %}
     </div>
+
+    <!-- page footer -->
+    <footer class="clearfix">
+        <div class="col-md-4 col-xs-12 text-center">
+            <span>© registered 501(c) 3 by ZX</span>
+        </div>
+
+         <div class="col-md-4 col-xs-12 text-center footer-mid">
+            <span>Office Location: Prospect Street, Stamford, CT, USA</span>
+            <span>Phone: 888-222-2222</span>
+         </div>
+         
+         <div class="col-md-4 col-xs-12 text-center">
+            <a href="http://www.facebook.com/zhexiao27" target="_blank">
+                <i class="fa fa-facebook"></i>
+            </a>
+            <a href="http://twitter.com/zhexiao27" target="_blank">
+                <i class="fa fa-twitter"></i>
+            </a>
+            <a href="http://instagram.com/zhexiao27" target="_blank">
+                <i class="fa fa-instagram"></i>
+            </a>
+            <a href="https://plus.google.com/u/0/103961084361963106141/posts" target="_blank">
+                <i class="fa fa-google-plus"></i>
+            </a>
+         </div>
+    </footer>
 </body>
 
 </html>
