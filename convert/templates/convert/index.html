@@ -34,7 +34,7 @@
 
     <!-- Video Convert Wrap -->
     <div class="wrap-2">
-
+        <div id="video-control-drag"></div>
     </div>
 
 
@@ -163,7 +163,26 @@
     <script src="{% static "js/jquery.imageScroll.min.js" %}"></script>
     <script src="{% static "js/scrollreveal.min.js" %}"></script>
     <script src="{% static "js/pace.min.js" %}"></script>
+    <script src="{% static "js/nouislider.min.js" %}"></script>
+    <script src="{% static "js/wNumb.js" %}"></script>
     <script type="text/javascript">
+        // video control drag
+        var video_drag_slider = document.getElementById('video-control-drag');
+        noUiSlider.create(video_drag_slider, {
+            start: [ 0, 10 ],
+            behaviour: 'drag',
+            connect: true,
+            margin: 1,
+            tooltips: [ wNumb({ decimals: 0 }), wNumb({ decimals: 0 }) ],
+            range: {
+                'min':  0,
+                'max':  50
+            }
+        });
+        video_drag_slider.noUiSlider.on('change', function( values, handle){
+            console.log(values)
+        });
+
         // content scroll
         window.sr = ScrollReveal({
             reset:true
