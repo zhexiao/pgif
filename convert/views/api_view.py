@@ -18,6 +18,7 @@ class ConvertVideo(APIView):
     def __init__(self):
         self.video_path = settings.BASE_DIR + '/files/video/'
         self.gif_path = settings.BASE_DIR + '/files/gif/'
+        self.response_data = {'error':False}
 
 
     def post(self, request, format=None):
@@ -43,9 +44,9 @@ class ConvertVideo(APIView):
         - application/xml
         """
         try:
-            post_data = request.data
-            self.link = post_data['link']
-            self.type = post_data['type']
+            self.post_data = request.data
+            self.link = self.post_data['link']
+            self.type = self.post_data['type']
 
             try:
                 # check convert video type
@@ -75,8 +76,9 @@ class ConvertVideo(APIView):
             # format video by new requirement
             self.format_to_video()
             self.response_file = request.build_absolute_uri('/files/video/') + self.new_video_name
-            
-        return Response(self.response_file, status=status.HTTP_200_OK)
+
+        self.response_data['response_file'] = self.response_file    
+        return Response(self.response_data, status=status.HTTP_200_OK)
 
 
     # download video
@@ -128,14 +130,19 @@ class ConvertVideo(APIView):
             self.gif_name = str(uuid.uuid4()) + '.gif'
             self.gif_fullpath = self.gif_path + self.gif_name
 
+            try:
+                self.start_timestamps = self.post_data['start_timestamps']
+                self.gif_duration = self.post_data['gif_duration']
+            except Exception as e:
+                self.start_timestamps = 5
+                self.gif_duration = 20
+
             # default gif parameters
-            self.start_timestamps = 5
-            self.video_duration = 20
             self.gif_width = 320
             self.gif_height = 240
-            self.frameRate = 10
+            self.frameRate = 15
 
-            command = 'ffmpeg -i {0} -ss {1} -pix_fmt rgb24 -r {2} -s {3}x{4} -t {5} {6} 2>&1'.format(self.video_fullpath, self.start_timestamps, self.frameRate, self.gif_width, self.gif_height, self.video_duration, self.gif_fullpath)
+            command = 'ffmpeg -i {0} -ss {1} -pix_fmt rgb24 -r {2} -s {3}x{4} -t {5} {6} 2>&1'.format(self.video_fullpath, self.start_timestamps, self.frameRate, self.gif_width, self.gif_height, self.gif_duration, self.gif_fullpath)
             subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
             # remove temporary video file

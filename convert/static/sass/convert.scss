@@ -15,6 +15,10 @@ a:hover, button:hover{
     @include css3(transition, all 0.6s linear);
 }
 
+.btn{
+    @include css3(border-radius, 0);
+}
+
 .navbar{
     @include css3(border-radius, 0);
     margin-bottom: 0;
@@ -96,7 +100,37 @@ a:hover, button:hover{
     }
 
     .wrap-2{
-        height:300px;
+        padding:20px 0;
+        #video-prop{
+            max-height:300px;
+            border: 1px solid #ddd;
+            @include css3('border-radius', 4px);
+            @include css3('box-shadow', 0px 1px 3px #6B6B6B);
+            margin-bottom:10px;
+        }
+
+        #video-control-drag{
+            .noUi-handle{
+                cursor:pointer;
+            }
+
+            .noUi-handle-lower, .noUi-handle-upper{
+                .noUi-tooltip{
+                    position: absolute;
+                    top: 30px;
+                    left: 7px;
+                    font-size:13px;
+                }
+
+                .noUi-tooltip:after{
+                    content:'s';
+                }
+            }
+        }
+
+        .video-action-tools{
+            margin-top:40px;
+        }
     }
 
     .wrap-3, .wrap-4, .wrap-5{

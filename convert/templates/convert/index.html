@@ -34,7 +34,22 @@
 
     <!-- Video Convert Wrap -->
     <div class="wrap-2">
-        <div id="video-control-drag"></div>
+        <div class="container">
+            <div class="text-center">
+                <video id='video-prop' controls preload='none' poster="https://media.w3.org/2010/05/sintel/poster.png">
+                    <source id='mp4' src="https://media.w3.org/2010/05/sintel/trailer.mp4" type='video/mp4'>
+                    <source id='webm' src="https://media.w3.org/2010/05/sintel/trailer.webm" type='video/webm'>
+                    <source id='ogv' src="https://media.w3.org/2010/05/sintel/trailer.ogv"  type='video/ogg'>
+                    <p>Your user agent does not support the HTML5 Video element.</p>
+                </video>
+            </div>
+            <div id="video-control-drag"></div>
+            <div class="video-action-tools cleafix">
+                <button class="btn btn-primary generate-video-gif">Generate</button>
+            </div>
+
+            <div class="video-convert-result"></div>
+        </div>
     </div>
 
 
@@ -166,63 +181,148 @@
     <script src="{% static "js/nouislider.min.js" %}"></script>
     <script src="{% static "js/wNumb.js" %}"></script>
     <script type="text/javascript">
-        // video control drag
-        var video_drag_slider = document.getElementById('video-control-drag');
-        noUiSlider.create(video_drag_slider, {
-            start: [ 0, 10 ],
-            behaviour: 'drag',
-            connect: true,
-            margin: 1,
-            tooltips: [ wNumb({ decimals: 0 }), wNumb({ decimals: 0 }) ],
-            range: {
-                'min':  0,
-                'max':  50
-            }
-        });
-        video_drag_slider.noUiSlider.on('change', function( values, handle){
-            console.log(values)
-        });
+        var convert_home_js = (function($){
+            // video control drag
+            var init_video = function(){
+                var _video_drag_slider = document.getElementById('video-control-drag');
+                var _video = document.getElementById('video-prop');
+                var _timeout_id, _video_start_time = 0, _video_end_time = 5, _video_duration;
 
-        // content scroll
-        window.sr = ScrollReveal({
-            reset:true
-        }).reveal('.wrap-3, .wrap-4, .wrap-5');
+                // play video 
+                var play_video = function(){
+                    _video.play();
+                }
 
-        sr.reveal('.top-content-1', {
-            delay    : 200,
-            distance : '90px',
-            origin : 'bottom',
-            scale    : 1.1
-        });
+                // paused video
+                var pause_video = function(){
+                    _video.pause();
+                }
 
-        sr.reveal('.top-content-2', {
-            delay    : 200,
-            origin : 'top',
-            distance : '90px',
-            scale    : 1.1
-        });
 
-        // image scroll
-        $('.img-scroll-holder').imageScroll({
-            coverRatio: 0.5
-        });
+                // create video slider
+                noUiSlider.create(_video_drag_slider, {
+                    start: [ _video_start_time, _video_end_time ],
+                    behaviour: 'drag',
+                    connect: true,
+                    margin: 1,
+                    step : 1,
+                    tooltips: [ wNumb({ decimals: 0 }), wNumb({ decimals: 0 }) ],
+                    range: {
+                        'min':  0,
+                        'max':  50
+                    }
+                });
 
-        // carousel
-        $('.owl-carousel').owlCarousel({
-            loop:true,
-            margin:10,
-            nav:false,
-            responsive:{
-                0:{
-                    items:1
-                },
-                600:{
-                    items:3
-                },
-                1000:{
-                    items:5
+                // listening the video slider evnet 
+                _video_drag_slider.noUiSlider.on('change', function( data, handle){
+                    _video_start_time = data[0],
+                    _video_end_time = data[1];
+
+                    // clear timeout
+                    clearTimeout(_timeout_id);
+
+                    // set start time
+                    _video.currentTime = _video_start_time;
+                    play_video();
+
+                    // paused when reach the end time
+                    _timeout_id = setTimeout(function(){ 
+                        pause_video();
+                    }, (_video_end_time-_video_start_time+1)*1000);
+                });
+
+                // generate gif from video
+                var generate_gif = function(event){
+                    var _gif_time_length = _video_end_time - _video_start_time;
+                    var data = {
+                        start_timestamps : _video_start_time,
+                        gif_duration : _gif_time_length,
+                        type : 'gif',
+                        link : 'https://media.w3.org/2010/05/sintel/trailer.mp4'
+                    }
+
+                    $('.video-convert-result').html('Loading...');
+                    $.ajax({
+                        type : 'post',
+                        data : data,
+                        url : '/convert/video',
+                        dataType : 'json'
+                    }).done(function(res){
+                        if(!res.error){
+                            $('.video-convert-result').html(res.response_file);
+                        }
+                    })
+                }
+
+                return {
+                    bind : function(){
+                        $('.generate-video-gif').on('click', generate_gif);
+                    }
                 }
             }
-        })
+
+            // content scroll 
+            var init_content_scroll = function(){
+                window.sr = ScrollReveal({
+                    reset:true
+                }).reveal('.wrap-3, .wrap-4, .wrap-5');
+
+                sr.reveal('.top-content-1', {
+                    delay    : 200,
+                    distance : '90px',
+                    origin : 'bottom',
+                    scale    : 1.1
+                });
+
+                sr.reveal('.top-content-2', {
+                    delay    : 200,
+                    origin : 'top',
+                    distance : '90px',
+                    scale    : 1.1
+                });
+            }
+
+            // init image scroll
+            var init_image_scroll = function(){
+                $('.img-scroll-holder').imageScroll({
+                    coverRatio: 0.5
+                });
+            }
+
+            // init carousel
+            var init_carousel = function(){
+                $('.owl-carousel').owlCarousel({
+                    loop:true,
+                    margin:10,
+                    nav:false,
+                    responsive:{
+                        0:{
+                            items:1
+                        },
+                        600:{
+                            items:3
+                        },
+                        1000:{
+                            items:5
+                        }
+                    }
+                })
+            }
+
+            return {
+                bind : function(){
+
+                },
+                init : function(){
+                    init_video().bind();
+                    init_content_scroll();
+                    init_image_scroll();
+                    init_carousel();
+                }
+            }
+        })($);
+        
+        convert_home_js.bind();
+        convert_home_js.init();      
     </script>
 {% endblock %}

@@ -8321,6 +8321,14 @@ a:hover, button:hover {
   -o-transition: all 0.6s linear;
   transition: all 0.6s linear; }
 
+.btn {
+  -khtml-border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0; }
+
 .navbar {
   -khtml-border-radius: 0;
   -webkit-border-radius: 0;
@@ -8384,7 +8392,34 @@ a:hover, button:hover {
       font-size: 15px;
       font-weight: 200; }
   .wrapper .wrap-2 {
-    height: 300px; }
+    padding: 20px 0; }
+    .wrapper .wrap-2 #video-prop {
+      max-height: 300px;
+      border: 1px solid #ddd;
+      -khtml-border-radius: 4px;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      -ms-border-radius: 4px;
+      -o-border-radius: 4px;
+      border-radius: 4px;
+      -khtml-box-shadow: 0px 1px 3px #6B6B6B;
+      -webkit-box-shadow: 0px 1px 3px #6B6B6B;
+      -moz-box-shadow: 0px 1px 3px #6B6B6B;
+      -ms-box-shadow: 0px 1px 3px #6B6B6B;
+      -o-box-shadow: 0px 1px 3px #6B6B6B;
+      box-shadow: 0px 1px 3px #6B6B6B;
+      margin-bottom: 10px; }
+    .wrapper .wrap-2 #video-control-drag .noUi-handle {
+      cursor: pointer; }
+    .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip {
+      position: absolute;
+      top: 30px;
+      left: 7px;
+      font-size: 13px; }
+    .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip:after, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip:after {
+      content: 's'; }
+    .wrapper .wrap-2 .video-action-tools {
+      margin-top: 40px; }
   .wrapper .wrap-3, .wrapper .wrap-4, .wrapper .wrap-5 {
     padding: 100px 0; }
   .wrapper .w2-img img {
