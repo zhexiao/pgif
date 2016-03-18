@@ -8409,8 +8409,6 @@ a:hover, button:hover {
       -o-box-shadow: 0px 1px 3px #6B6B6B;
       box-shadow: 0px 1px 3px #6B6B6B;
       margin-bottom: 10px; }
-    .wrapper .wrap-2 #video-control-drag .noUi-handle {
-      cursor: pointer; }
     .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip {
       position: absolute;
       top: 30px;
@@ -8420,6 +8418,13 @@ a:hover, button:hover {
       content: 's'; }
     .wrapper .wrap-2 .video-action-tools {
       margin-top: 40px; }
+    .wrapper .wrap-2 .noUi-target {
+      height: 12px; }
+      .wrapper .wrap-2 .noUi-target .noUi-handle {
+        height: 22px;
+        cursor: pointer; }
+        .wrapper .wrap-2 .noUi-target .noUi-handle:before, .wrapper .wrap-2 .noUi-target .noUi-handle:after {
+          height: 10px; }
   .wrapper .wrap-3, .wrapper .wrap-4, .wrapper .wrap-5 {
     padding: 100px 0; }
   .wrapper .w2-img img {

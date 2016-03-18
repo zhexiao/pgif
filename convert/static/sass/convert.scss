@@ -110,10 +110,6 @@ a:hover, button:hover{
         }
 
         #video-control-drag{
-            .noUi-handle{
-                cursor:pointer;
-            }
-
             .noUi-handle-lower, .noUi-handle-upper{
                 .noUi-tooltip{
                     position: absolute;
@@ -130,6 +126,19 @@ a:hover, button:hover{
 
         .video-action-tools{
             margin-top:40px;
+        }
+
+        .noUi-target{
+            height:12px;
+
+            .noUi-handle{
+                height:22px;
+                cursor:pointer;
+                
+                &:before, &:after{
+                    height:10px;
+                }         
+            }
         }
     }
 
