@@ -11,6 +11,32 @@ body{
     font-family: 'Open Sans', sans-serif;
 }
 
+.btn-purple{
+    color: #fff;
+    background-color: #8E44AD;
+    border-color: #8E44AD;
+
+    &:hover, &:focus{
+        color: #fff;
+        background-color: #561F6D;
+        border-color: #6a3381;
+        outline: none;
+    }
+}
+
+.btn-dark{
+    color: #FFF;
+    background-color: #454648;
+    border-color: #141619;
+
+    &:hover, &:focus{
+        color: #FFF;
+        background-color: #202021;
+        border-color: #2f353b;
+        outline: none;
+    }
+}
+
 a:hover, button:hover{
     @include css3(transition, all 0.6s linear);
 }
@@ -100,7 +126,37 @@ a:hover, button:hover{
     }
 
     .wrap-2{
-        padding:20px 0;
+        padding:20px;
+        border: 2px dashed #ddd;
+        border-radius: 3px;
+        margin-top: 60px;
+
+        .file-uploader{
+            text-align:center;
+            position: relative;
+
+            #drag-file-container{
+                padding:80px 0;
+            }
+
+            .fa{
+                font-size: 80px;
+                color:#bbb;
+            }
+
+            .upload-text{
+                display:block;
+                font-size: 20px;
+                color:#bbb;
+                margin-top:10px;
+            }
+
+            .file-uploader-footer{
+                text-align: left;
+                margin-top:10px;
+            }
+        }
+
         #video-prop{
             max-height:300px;
             border: 1px solid #ddd;

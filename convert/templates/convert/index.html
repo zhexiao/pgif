@@ -33,23 +33,32 @@
     </div>
 
     <!-- Video Convert Wrap -->
-    <div class="wrap-2">
-        <div class="container">
-            <div class="text-center">
-                <video id='video-prop' controls preload='none' poster="https://media.w3.org/2010/05/sintel/poster.png">
-                    <source id='mp4' src="https://media.w3.org/2010/05/sintel/trailer.mp4" type='video/mp4'>
-                    <source id='webm' src="https://media.w3.org/2010/05/sintel/trailer.webm" type='video/webm'>
-                    <source id='ogv' src="https://media.w3.org/2010/05/sintel/trailer.ogv"  type='video/ogg'>
-                    <p>Your user agent does not support the HTML5 Video element.</p>
-                </video>
-            </div>
-            <div id="video-control-drag"></div>
-            <div class="video-action-tools cleafix">
-                <button class="btn btn-primary generate-video-gif">Generate</button>
+    <div class="wrap-2 container">
+        <div class="file-uploader">
+            <div id="drag-file-container">
+                <i class="fa fa-upload"></i>
+                <span class="upload-text">Drag file to upload</span>
             </div>
 
-            <div class="video-convert-result"></div>
+            <div class="file-uploader-footer">
+                <button class="btn btn-purple">Add File</button>
+                <button class="btn btn-dark">Start Upload</button>
+            </div>
         </div>
+        <!-- <div class="text-center">
+            <video id='video-prop' controls preload='none' poster="https://media.w3.org/2010/05/sintel/poster.png">
+                <source id='mp4' src="https://media.w3.org/2010/05/sintel/trailer.mp4" type='video/mp4'>
+                <source id='webm' src="https://media.w3.org/2010/05/sintel/trailer.webm" type='video/webm'>
+                <source id='ogv' src="https://media.w3.org/2010/05/sintel/trailer.ogv"  type='video/ogg'>
+                <p>Your user agent does not support the HTML5 Video element.</p>
+            </video>
+        </div>
+        <div id="video-control-drag"></div> -->
+      <!--   <div class="video-action-tools cleafix">
+            <button class="btn btn-primary generate-video-gif">Generate</button>
+        </div> -->
+
+        <div class="video-convert-result"></div>
     </div>
 
 
@@ -182,6 +191,72 @@
     <script src="{% static "js/wNumb.js" %}"></script>
     <script type="text/javascript">
         var convert_home_js = (function($){
+            // init drag file uploader
+            var init_drag_upload = function(){
+                var _drag_container = document.getElementById('drag-file-container');
+                var test_env = {
+                      filereader: typeof FileReader != 'undefined',
+                      dnd: 'draggable' in document.createElement('span'),
+                      formdata: !!window.FormData,
+                      progress: "upload" in new XMLHttpRequest
+                };
+
+
+                // test browser
+                var test_browser = function(){
+                    "filereader formdata progress".split(' ').forEach(function (api) {
+                        if (test_env[api] === false) {
+                            alert('do not support drag upload!');
+                        }
+                    });
+                }
+
+                var send_request = function(form_data){
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/devnull.php');
+
+                    xhr.onload = function() {
+                        console.log(100)
+                    };
+
+                    xhr.upload.onprogress = function (event) {
+                        if (event.lengthComputable) {
+                            var complete_percentage = (event.loaded / event.total * 100 | 0);
+                            console.log(complete_percentage)
+                        }
+                    }
+                    
+                    xhr.send(form_data);
+                }
+
+
+                var read_file = function(files){
+                    var form_data = new FormData();
+                    for (var i = 0; i < files.length; i++) {
+                        form_data.append('file', files[i]);
+                    }
+
+                    send_request(form_data)
+                }
+
+                _drag_container.ondragover = function () { 
+                    this.className = 'hover'; 
+                    return false; 
+                };
+
+                _drag_container.ondragend = function () { 
+                    this.className = ''; 
+                    return false; 
+                };
+
+                _drag_container.ondrop = function (event) { 
+                    event.preventDefault();
+                    read_file(event.dataTransfer.files);
+                };
+
+                test_browser();
+            }
+
             // video control drag
             var init_video = function(){
                 var _video_drag_slider = document.getElementById('video-control-drag');
@@ -314,7 +389,8 @@
 
                 },
                 init : function(){
-                    init_video().bind();
+                    init_drag_upload();
+                    // init_video().bind();
                     init_content_scroll();
                     init_image_scroll();
                     init_carousel();
