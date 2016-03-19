@@ -113,9 +113,28 @@ a:hover, button:hover{
             .noUi-handle-lower, .noUi-handle-upper{
                 .noUi-tooltip{
                     position: absolute;
-                    top: 30px;
-                    left: 7px;
-                    font-size:13px;
+                    top: 24px;
+                    left: -2px;
+                    background-color: #333;
+                    white-space: nowrap;
+                    color: #fff;
+                    padding: 3px 5px;
+                    border-radius: 2px;
+                    font-size: 11px;
+
+                    &:before{
+                        content: "";
+                        position: absolute;
+                        display: block;
+                        top: -6px;
+                        left: 50%;
+                        width: 0;
+                        height: 0;
+                        margin-left: -3px;
+                        overflow: hidden;
+                        border: 3px solid transparent;
+                        border-bottom-color: #333;
+                    }
                 }
 
                 .noUi-tooltip:after{
@@ -129,15 +148,34 @@ a:hover, button:hover{
         }
 
         .noUi-target{
-            height:12px;
+            height:10px;
 
             .noUi-handle{
-                height:22px;
+                height:20px;
+                width:20px;
                 cursor:pointer;
+                @include css3(border-radius, 50%);
                 
-                &:before, &:after{
-                    height:10px;
+                &:after{
+                    display: inline-block;
+                    width: 6px;
+                    height: 6px;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-top: -3px;
+                    margin-left: -3px;
+                    background-color: #666;
+                    border-radius: 100px;
                 }         
+
+                &:before{
+                    background:none;
+                }
+            }
+
+            .noUi-connect{
+                background:#03A9F4;
             }
         }
     }
