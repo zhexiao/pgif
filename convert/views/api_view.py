@@ -11,6 +11,7 @@ import urllib.request, os, subprocess, uuid, re
 class VideoConvertType(Enum):
     gif = 'gif'
     video = 'video'
+    upload = 'upload'
 
 
 # convert video
@@ -45,7 +46,6 @@ class ConvertVideo(APIView):
         """
         try:
             self.post_data = request.data
-            self.link = self.post_data['link']
             self.type = self.post_data['type']
 
             try:
@@ -54,15 +54,22 @@ class ConvertVideo(APIView):
             except Exception as e:
                 return Response('Convert type error!', status=status.HTTP_400_BAD_REQUEST)
 
-            # try to download the video to local disk
-            self.download_video()
+
+            # if type is upload, then upload video to disk
+            if self.type=='upload':
+                self.file_handle = request.data['file']
+                self.save_uploaded_file()
+            # download a video from a link
+            else:
+                self.link = self.post_data['link']
+                self.download_video()
         except Exception as e:
             return Response('Parameters error!', status=status.HTTP_400_BAD_REQUEST)
        
 
         if not self.video_name:
             # if not exist file, then return an error message
-            return Response('Video link {0} is not found!'.format(self.link), status=status.HTTP_400_BAD_REQUEST)
+            return Response('Video can not save in our system, please try it later!', status=status.HTTP_400_BAD_REQUEST)
         else:
             # if exist video file, analysis this video and get video basic info
             self.analysis_video()
@@ -76,9 +83,23 @@ class ConvertVideo(APIView):
             # format video by new requirement
             self.format_to_video()
             self.response_file = request.build_absolute_uri('/files/video/') + self.new_video_name
+        elif VideoConvertType(self.type).value == 'upload':
+            # format video by new requirement
+            self.format_to_video()
+            self.response_file = request.build_absolute_uri('/files/video/') + self.new_video_name
 
         self.response_data['response_file'] = self.response_file    
         return Response(self.response_data, status=status.HTTP_200_OK)
+
+
+    # save uploaded file
+    def save_uploaded_file(self):
+        self.video_name = str(uuid.uuid4()) +'.mp4'
+        self.video_fullpath = self.video_path + self.video_name
+
+        with open(self.video_fullpath, 'wb+') as v_f:
+            for chunk in self.file_handle.chunks():
+                v_f.write(chunk)
 
 
     # download video
@@ -159,8 +180,8 @@ class ConvertVideo(APIView):
 
             # set default video parameters
             self.frameRate = 24
-            self.newWidth = 320
-            self.newHeight = 180
+            self.newWidth = 640
+            self.newHeight = 320
             self.videoRate = '200k'
             self.audioRate = '64k'
 

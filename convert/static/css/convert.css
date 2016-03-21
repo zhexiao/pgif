@@ -120,6 +120,8 @@ a:hover, button:hover {
       .wrapper .wrap-2 .file-uploader .file-uploader-footer {
         text-align: left;
         margin-top: 10px; }
+      .wrapper .wrap-2 .file-uploader .video-container-wrap {
+        display: none; }
     .wrapper .wrap-2 #video-prop {
       max-height: 300px;
       border: 1px solid #ddd;
