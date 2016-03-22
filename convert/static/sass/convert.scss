@@ -134,6 +134,7 @@ a:hover, button:hover{
         .file-uploader{
             text-align:center;
             position: relative;
+            @include css3(user-select, none);
 
             #drag-file-container{
                 padding:80px 0;
@@ -153,11 +154,43 @@ a:hover, button:hover{
 
             .file-uploader-footer{
                 text-align: left;
-                margin-top:10px;
+                margin-top: 40px;
+                @include css3(user-select, none);
             }
 
             .video-container-wrap{
                 display:none;
+            }
+
+            .video-progress-bar-wrap{
+                display:none;
+            }
+
+            .video-convert-result{
+                display:none;
+
+                span{
+                    float:right;
+                    margin-top: 10px;
+                }
+
+                a{
+                    color:#fff;
+                }
+            }
+
+            .vup-text{
+                text-align: center;
+                font-size: 13px;
+                margin-top: -20px;
+                color: #15646B;
+            }
+
+            .generate-video-gif{
+                .fa{
+                    font-size: 16px;
+                    color: #fff;
+                }
             }
         }
 

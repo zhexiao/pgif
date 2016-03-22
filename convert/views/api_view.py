@@ -59,10 +59,16 @@ class ConvertVideo(APIView):
             if self.type=='upload':
                 self.file_handle = request.data['file']
                 self.save_uploaded_file()
-            # download a video from a link
             else:
-                self.link = self.post_data['link']
-                self.download_video()
+                # download a video from a link
+                if 'link' in self.post_data:
+                    self.link = self.post_data['link']
+                    self.download_video()
+                # this video already exist in our disk
+                elif 'video_name' in self.post_data:
+                    self.video_name = self.post_data['video_name']
+                    self.video_fullpath = self.video_path + self.video_name
+                    pprint(self.video_fullpath)
         except Exception as e:
             return Response('Parameters error!', status=status.HTTP_400_BAD_REQUEST)
        
@@ -86,6 +92,8 @@ class ConvertVideo(APIView):
         elif VideoConvertType(self.type).value == 'upload':
             # format video by new requirement
             self.format_to_video()
+            self.response_data['video_duration'] = self.metadata['duration']
+            self.response_data['video_name'] = self.new_video_name
             self.response_file = request.build_absolute_uri('/files/video/') + self.new_video_name
 
         self.response_data['response_file'] = self.response_file    

@@ -42,23 +42,35 @@
 
             <div class="video-container-wrap">
                 <video id='video-prop' controls preload='none'>
-                    <source id='vp-mp4' src="" type='video/mp4'>    
+                    <source id='vp-mp4' src="" type='video/mp4' data-video-name="">    
                     <p>Your user agent does not support the HTML5 Video element.</p>
                 </video>
                 <div id="video-control-drag"></div>
             </div>
 
             <div class="file-uploader-footer">
-                <button class="btn btn-purple">Add File</button>
-                <button class="btn btn-dark">Start Upload</button>
+                <div class="col-md-4">
+                    <button class="btn btn-purple">Add File</button>
+                    <button class="btn btn-dark">Start Upload</button>
+                    <button class="btn btn-primary generate-video-gif">Generate</button>
+                </div>
+
+                <div class="col-md-8 video-progress-bar-wrap">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active video-upload-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%;">
+                        </div>
+                    </div>
+                    <div class="vup-text"></div>
+                </div>
+
+                <div class="col-md-8 video-convert-result">
+                    <span class="label label-primary">
+                        <a class="vcr-a" href="" target="_blank"></a>
+                    </span>
+                </div>
             </div>
         </div>
-  
-      <!--   <div class="video-action-tools cleafix">
-            <button class="btn btn-primary generate-video-gif">Generate</button>
-        </div> -->
 
-        <div class="video-convert-result"></div>
     </div>
 
 
@@ -196,7 +208,7 @@
                 var _drag_container = document.getElementById('drag-file-container');
                 var _video = document.getElementById('video-prop');
                 var _video_drag_slider = document.getElementById('video-control-drag');
-                var _timeout_id, _video_start_time = 0, _video_end_time = 5, _video_duration;
+                var _timeout_id, _video_start_time = 0, _video_end_time = 5, _video_duration = 30;
                 var _new_video = false;
 
                 // test browser support html5 video or not
@@ -231,15 +243,44 @@
                     _video.load();
                 }
 
+                var _fa_loading_icon = function(){
+                    return '<i class="fa fa-spin fa-spinner"></i>';
+                }
+
+                // reset all div
+                var _reset_all_elements = function(){
+                    $('.video-convert-result').hide();
+                    $('.video-progress-bar-wrap').hide();
+                    $('.video-container-wrap').hide();
+                    $('#drag-file-container').show();
+                    $('#vp-mp4').attr('src', '');
+                    $('#vp-mp4').attr('data-video-name', '');
+                }
+
                 // send uploaded video data to server
                 var send_request = function(form_data){
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', '/convert/video');
+     
+                    xhr.upload.onloadstart = function (event) {
+                        $('.video-progress-bar-wrap').show();
+                        $('.video-convert-result').hide();
+                        $('.vup-text').text('Uploading...');
+                    }
+
+                    xhr.upload.onprogress = function (event) {
+                        if (event.lengthComputable) {
+                            var complete_percentage = (event.loaded / event.total * 100 | 0);
+                            $('.video-upload-progress').width(complete_percentage+'%');
+                        }
+                    }
 
                     xhr.onload = function(result) {
                         var res_json = jQuery.parseJSON(xhr.responseText);
                         if(!res_json.error){
                             $('#vp-mp4').attr('src', res_json.response_file);
+                            $('#vp-mp4').attr('data-video-name', res_json.video_name);
+                            _video_duration = res_json.video_duration.replace("00:00:", "");
                             _new_video = true;
                             load_video();
 
@@ -249,17 +290,20 @@
                             $('.video-container-wrap').hide();
                             $('#drag-file-container').show();
                         }
-                        
-                        console.log(100);
                     };
 
-                    xhr.upload.onprogress = function (event) {
-                        if (event.lengthComputable) {
-                            var complete_percentage = (event.loaded / event.total * 100 | 0);
-                            console.log(complete_percentage)
-                        }
+                    xhr.onloadend = function(event){                       
+                        $('.video-progress-bar-wrap').hide();
+
+                        // update video slider range
+                        _video_drag_slider.noUiSlider.updateOptions({
+                            range: {
+                                'min': 0,
+                                'max': parseInt(_video_duration)
+                            }
+                        });
                     }
-                    
+
                     xhr.send(form_data);
                 }
 
@@ -284,20 +328,18 @@
                     tooltips: [ wNumb({ decimals: 0 }), wNumb({ decimals: 0 }) ],
                     range: {
                         'min':  0,
-                        'max':  50
+                        'max':  _video_duration
                     }
                 });
 
                 // this function include all event handle
                 var _event_container = function(){
                     // video drag envet
-                    _drag_container.ondragover = function () { 
-                        this.className = 'hover'; 
+                    _drag_container.ondragover = function () {
                         return false; 
                     };
 
-                    _drag_container.ondragend = function () { 
-                        this.className = ''; 
+                    _drag_container.ondragend = function () {
                         return false; 
                     };
 
@@ -338,23 +380,29 @@
 
                 // generate gif from video
                 var generate_gif = function(event){
-                    var _gif_time_length = _video_end_time - _video_start_time;
+                    var _gif_time_length = _video_end_time - _video_start_time,
+                        video_name = $('#vp-mp4').attr('data-video-name'),
+                        $obj = $(event.target),
+                        button_text = $obj.html();
+
                     var data = {
                         start_timestamps : _video_start_time,
                         gif_duration : _gif_time_length,
                         type : 'gif',
-                        link : 'https://media.w3.org/2010/05/sintel/trailer.mp4'
+                        video_name : video_name
                     }
 
-                    $('.video-convert-result').html('Loading...');
+                    $obj.html(_fa_loading_icon() );
                     $.ajax({
                         type : 'post',
                         data : data,
                         url : '/convert/video',
                         dataType : 'json'
                     }).done(function(res){
+                        $obj.html(button_text);
                         if(!res.error){
-                            $('.video-convert-result').html(res.response_file);
+                            $('.video-convert-result').show();
+                            $('.vcr-a').attr('href', res.response_file).text(res.response_file);
                         }
                     })
                 }

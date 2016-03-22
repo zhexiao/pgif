@@ -8418,7 +8418,13 @@ a:hover, button:hover {
     margin-top: 60px; }
     .wrapper .wrap-2 .file-uploader {
       text-align: center;
-      position: relative; }
+      position: relative;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      user-select: none; }
       .wrapper .wrap-2 .file-uploader #drag-file-container {
         padding: 80px 0; }
       .wrapper .wrap-2 .file-uploader .fa {
@@ -8431,9 +8437,32 @@ a:hover, button:hover {
         margin-top: 10px; }
       .wrapper .wrap-2 .file-uploader .file-uploader-footer {
         text-align: left;
-        margin-top: 10px; }
+        margin-top: 40px;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none; }
       .wrapper .wrap-2 .file-uploader .video-container-wrap {
         display: none; }
+      .wrapper .wrap-2 .file-uploader .video-progress-bar-wrap {
+        display: none; }
+      .wrapper .wrap-2 .file-uploader .video-convert-result {
+        display: none; }
+        .wrapper .wrap-2 .file-uploader .video-convert-result span {
+          float: right;
+          margin-top: 10px; }
+        .wrapper .wrap-2 .file-uploader .video-convert-result a {
+          color: #fff; }
+      .wrapper .wrap-2 .file-uploader .vup-text {
+        text-align: center;
+        font-size: 13px;
+        margin-top: -20px;
+        color: #15646B; }
+      .wrapper .wrap-2 .file-uploader .generate-video-gif .fa {
+        font-size: 16px;
+        color: #fff; }
     .wrapper .wrap-2 #video-prop {
       max-height: 300px;
       border: 1px solid #ddd;
