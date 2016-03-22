@@ -68,7 +68,6 @@ class ConvertVideo(APIView):
                 elif 'video_name' in self.post_data:
                     self.video_name = self.post_data['video_name']
                     self.video_fullpath = self.video_path + self.video_name
-                    pprint(self.video_fullpath)
         except Exception as e:
             return Response('Parameters error!', status=status.HTTP_400_BAD_REQUEST)
        
