@@ -192,18 +192,23 @@
     <script type="text/javascript">
         var convert_home_js = (function($){
             // init drag file uploader
-            var init_drag_upload = function(){
+            var init_video_parts = function(){
                 var _drag_container = document.getElementById('drag-file-container');
+                var _video = document.getElementById('video-prop');
+                var _video_drag_slider = document.getElementById('video-control-drag');
+                var _timeout_id, _video_start_time = 0, _video_end_time = 5, _video_duration;
+                var _new_video = false;
+
+                // test browser support html5 video or not
                 var test_env = {
-                      filereader: typeof FileReader != 'undefined',
-                      dnd: 'draggable' in document.createElement('span'),
-                      formdata: !!window.FormData,
-                      progress: "upload" in new XMLHttpRequest
+                    filereader: typeof FileReader != 'undefined',
+                    dnd: 'draggable' in document.createElement('span'),
+                    formdata: !!window.FormData,
+                    progress: "upload" in new XMLHttpRequest
                 };
 
-
                 // test browser
-                var test_browser = function(){
+                var _test_browser = function(){
                     "filereader formdata progress".split(' ').forEach(function (api) {
                         if (test_env[api] === false) {
                             alert('do not support drag upload!');
@@ -211,6 +216,22 @@
                     });
                 }
 
+                // play video 
+                var play_video = function(){
+                    _video.play();
+                }
+
+                // paused video
+                var pause_video = function(){
+                    _video.pause();
+                }
+
+                // load video
+                var load_video = function(){
+                    _video.load();
+                }
+
+                // send uploaded video data to server
                 var send_request = function(form_data){
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', '/convert/video');
@@ -219,10 +240,9 @@
                         var res_json = jQuery.parseJSON(xhr.responseText);
                         if(!res_json.error){
                             $('#vp-mp4').attr('src', res_json.response_file);
-                            var _video = document.getElementById('video-prop');
-                            _video.load();
-                            _video.play();
-                            
+                            _new_video = true;
+                            load_video();
+
                             $('.video-container-wrap').show();
                             $('#drag-file-container').hide();
                         }else{
@@ -243,7 +263,7 @@
                     xhr.send(form_data);
                 }
 
-
+                // read data from upload container
                 var read_file = function(files){
                     var form_data = new FormData();
                     for (var i = 0; i < files.length; i++) {
@@ -253,41 +273,6 @@
                     form_data.append('type', 'upload');
                     send_request(form_data);
                 }
-
-                _drag_container.ondragover = function () { 
-                    this.className = 'hover'; 
-                    return false; 
-                };
-
-                _drag_container.ondragend = function () { 
-                    this.className = ''; 
-                    return false; 
-                };
-
-                _drag_container.ondrop = function (event) { 
-                    event.preventDefault();
-                    read_file(event.dataTransfer.files);
-                };
-
-                test_browser();
-            }
-
-            // video control drag
-            var init_video = function(){
-                var _video_drag_slider = document.getElementById('video-control-drag');
-                var _video = document.getElementById('video-prop');
-                var _timeout_id, _video_start_time = 0, _video_end_time = 5, _video_duration;
-
-                // play video 
-                var play_video = function(){
-                    _video.play();
-                }
-
-                // paused video
-                var pause_video = function(){
-                    _video.pause();
-                }
-
 
                 // create video slider
                 noUiSlider.create(_video_drag_slider, {
@@ -303,23 +288,53 @@
                     }
                 });
 
-                // listening the video slider evnet 
-                _video_drag_slider.noUiSlider.on('change', function( data, handle){
-                    _video_start_time = data[0],
-                    _video_end_time = data[1];
+                // this function include all event handle
+                var _event_container = function(){
+                    // video drag envet
+                    _drag_container.ondragover = function () { 
+                        this.className = 'hover'; 
+                        return false; 
+                    };
 
-                    // clear timeout
-                    clearTimeout(_timeout_id);
+                    _drag_container.ondragend = function () { 
+                        this.className = ''; 
+                        return false; 
+                    };
 
-                    // set start time
-                    _video.currentTime = _video_start_time;
-                    play_video();
+                    _drag_container.ondrop = function (event) { 
+                        event.preventDefault();
+                        read_file(event.dataTransfer.files);
+                    };                 
 
-                    // paused when reach the end time
-                    _timeout_id = setTimeout(function(){ 
-                        pause_video();
-                    }, (_video_end_time-_video_start_time+1)*1000);
-                });
+
+                    // listening the video slider evnet 
+                    _video_drag_slider.noUiSlider.on('change', function( data, handle){
+                        _video_start_time = data[0],
+                        _video_end_time = data[1];
+
+                        // clear timeout
+                        clearTimeout(_timeout_id);
+
+                        // set start time
+                        _video.currentTime = _video_start_time;
+                        play_video();
+
+                        // paused when reach the end time
+                        _timeout_id = setTimeout(function(){ 
+                            pause_video();
+                        }, (_video_end_time-_video_start_time+1)*1000);
+                    });
+
+
+                    // reload new video source
+                    _video.onplay = function() {
+                        if(_new_video){
+                            _video.load();
+                            _video.play();
+                            _new_video = false;
+                        }
+                    };
+                }
 
                 // generate gif from video
                 var generate_gif = function(event){
@@ -345,7 +360,9 @@
                 }
 
                 return {
-                    bind : function(){
+                    load : function(){
+                        _test_browser();
+                        _event_container();
                         $('.generate-video-gif').on('click', generate_gif);
                     }
                 }
@@ -404,8 +421,7 @@
 
                 },
                 init : function(){
-                    init_drag_upload();
-                    init_video().bind();
+                    init_video_parts().load();
                     init_content_scroll();
                     init_image_scroll();
                     init_carousel();

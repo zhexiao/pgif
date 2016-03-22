@@ -185,7 +185,7 @@ class ConvertVideo(APIView):
             self.videoRate = '200k'
             self.audioRate = '64k'
 
-            command = 'ffmpeg -i '+self.video_fullpath+'  -ac 1  -b:a '+self.audioRate+' -b:v '+self.videoRate+' -r '+str(self.frameRate)+' -flags +aic+mv4 -s '+str(self.newWidth)+'x'+str(self.newHeight)+' -y '+new_video_fullpath+' 2>&1'
+            command = 'ffmpeg -i '+self.video_fullpath+'  -ac 1  -b:a '+self.audioRate+' -b:v '+self.videoRate+' -r '+str(self.frameRate)+' -flags +aic+mv4 -s '+str(self.newWidth)+'x'+str(self.newHeight)+' -y -movflags faststart '+new_video_fullpath+' 2>&1'
 
             subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
             # remove temporary video file
