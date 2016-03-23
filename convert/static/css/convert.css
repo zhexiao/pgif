@@ -132,17 +132,24 @@ a:hover, button:hover {
         -ms-user-select: none;
         -o-user-select: none;
         user-select: none; }
+      .wrapper .wrap-2 .file-uploader .file-uploader-header {
+        text-align: left; }
+        .wrapper .wrap-2 .file-uploader .file-uploader-header .fa {
+          font-size: 14px;
+          color: #fff; }
+      .wrapper .wrap-2 .file-uploader #upload-file-input {
+        display: none; }
       .wrapper .wrap-2 .file-uploader .video-container-wrap {
         display: none; }
       .wrapper .wrap-2 .file-uploader .video-progress-bar-wrap {
         display: none; }
       .wrapper .wrap-2 .file-uploader .video-convert-result {
-        display: none; }
-        .wrapper .wrap-2 .file-uploader .video-convert-result span {
-          float: right;
-          margin-top: 10px; }
+        display: none;
+        background: #796799;
+        padding: 5px 10px;
+        margin-top: 1px; }
         .wrapper .wrap-2 .file-uploader .video-convert-result a {
-          color: #fff; }
+          color: #efefef; }
       .wrapper .wrap-2 .file-uploader .vup-text {
         text-align: center;
         font-size: 13px;
@@ -160,12 +167,6 @@ a:hover, button:hover {
       -ms-border-radius: 4px;
       -o-border-radius: 4px;
       border-radius: 4px;
-      -khtml-box-shadow: 0px 1px 3px #6B6B6B;
-      -webkit-box-shadow: 0px 1px 3px #6B6B6B;
-      -moz-box-shadow: 0px 1px 3px #6B6B6B;
-      -ms-box-shadow: 0px 1px 3px #6B6B6B;
-      -o-box-shadow: 0px 1px 3px #6B6B6B;
-      box-shadow: 0px 1px 3px #6B6B6B;
       margin-bottom: 10px; }
     .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip {
       position: absolute;

@@ -158,6 +158,19 @@ a:hover, button:hover{
                 @include css3(user-select, none);
             }
 
+            .file-uploader-header{
+                text-align: left;
+
+                .fa{
+                    font-size: 14px;
+                    color:#fff;
+                }
+            }
+
+            #upload-file-input{
+                display:none;
+            }
+
             .video-container-wrap{
                 display:none;
             }
@@ -168,14 +181,12 @@ a:hover, button:hover{
 
             .video-convert-result{
                 display:none;
-
-                span{
-                    float:right;
-                    margin-top: 10px;
-                }
+                background: #796799;
+                padding: 5px 10px;
+                margin-top: 1px;
 
                 a{
-                    color:#fff;
+                    color: #efefef;
                 }
             }
 
@@ -198,7 +209,6 @@ a:hover, button:hover{
             max-height:300px;
             border: 1px solid #ddd;
             @include css3('border-radius', 4px);
-            @include css3('box-shadow', 0px 1px 3px #6B6B6B);
             margin-bottom:10px;
         }
 

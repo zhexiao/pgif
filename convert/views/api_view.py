@@ -174,7 +174,7 @@ class ConvertVideo(APIView):
             subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
             # remove temporary video file
-            os.remove(self.video_fullpath)
+            # os.remove(self.video_fullpath)
         except Exception as e:
             pass     
 

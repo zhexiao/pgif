@@ -35,9 +35,20 @@
     <!-- Video Convert Wrap -->
     <div class="wrap-2 container">
         <div class="file-uploader">
+            <div class="file-uploader-header clearfix">
+                <div class="col-md-12"> 
+                    <button class="btn btn-purple upload-file-bottom">
+                        <i class="fa fa-upload"></i>
+                        Upload File
+                    </button>
+                    <form id="upload-file-input-form" enctype="multipart/form-data">
+                        <input type="file" name="file" id="upload-file-input" accept="video/mp4"/>
+                    </form>
+                </div>
+            </div>
             <div id="drag-file-container">
                 <i class="fa fa-upload"></i>
-                <span class="upload-text">Drag file to upload</span>
+                <span class="upload-text">Upload file or drag your file to here</span>
             </div>
 
             <div class="video-container-wrap">
@@ -48,11 +59,12 @@
                 <div id="video-control-drag"></div>
             </div>
 
-            <div class="file-uploader-footer">
+            <div class="file-uploader-footer clearfix">
                 <div class="col-md-4">
-                    <button class="btn btn-purple">Add File</button>
-                    <button class="btn btn-dark">Start Upload</button>
-                    <button class="btn btn-primary generate-video-gif">Generate</button>
+                    <button class="btn btn-primary generate-video-gif">
+                        <i class="fa fa-gavel"></i>
+                        Generate
+                    </button>
                 </div>
 
                 <div class="col-md-8 video-progress-bar-wrap">
@@ -64,9 +76,7 @@
                 </div>
 
                 <div class="col-md-8 video-convert-result">
-                    <span class="label label-primary">
-                        <a class="vcr-a" href="" target="_blank"></a>
-                    </span>
+                    <a class="vcr-a" href="" target="_blank"></a>
                 </div>
             </div>
         </div>
@@ -194,7 +204,7 @@
         </div>
     </div>
 
-
+    <script src="{% static "js/sweetalert.min.js" %}"></script>
     <script src="{% static "js/owl.carousel.min.js" %}"></script>
     <script src="{% static "js/jquery.imageScroll.min.js" %}"></script>
     <script src="{% static "js/scrollreveal.min.js" %}"></script>
@@ -385,6 +395,16 @@
                         $obj = $(event.target),
                         button_text = $obj.html();
 
+                    if(video_name == ''){
+                        swal({   
+                            title: "Error!",   
+                            text: "Please upload a video first.",   
+                            type: "error",   
+                            confirmButtonText: "Cool" 
+                        });
+                        return;
+                    }
+
                     var data = {
                         start_timestamps : _video_start_time,
                         gif_duration : _gif_time_length,
@@ -392,7 +412,7 @@
                         video_name : video_name
                     }
 
-                    $obj.html(_fa_loading_icon() );
+                    $obj.html( _fa_loading_icon() );
                     $.ajax({
                         type : 'post',
                         data : data,
@@ -407,11 +427,26 @@
                     })
                 }
 
+                // upload file trigger event
+                var upload_file_trigger = function(){
+                    $('#upload-file-input').trigger('click');
+                }
+
+                // upload file
+                var upload_file = function(event){
+                    var form_data = new FormData($('#upload-file-input-form')[0]);
+                    form_data.append('type', 'upload');
+
+                    send_request(form_data);
+                }
+
                 return {
                     load : function(){
                         _test_browser();
                         _event_container();
                         $('.generate-video-gif').on('click', generate_gif);
+                        $('.upload-file-bottom').on('click', upload_file_trigger);
+                        $('#upload-file-input').on('change', upload_file);
                     }
                 }
             }
