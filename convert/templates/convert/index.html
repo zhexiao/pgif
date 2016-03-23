@@ -52,7 +52,7 @@
             </div>
 
             <div class="video-container-wrap">
-                <video id='video-prop' controls preload='none'>
+                <video id='video-prop' controls>
                     <source id='vp-mp4' src="" type='video/mp4' data-video-name="">    
                     <p>Your user agent does not support the HTML5 Video element.</p>
                 </video>
@@ -61,6 +61,16 @@
 
             <div class="file-uploader-footer clearfix">
                 <div class="col-md-4">
+                    <button class="btn btn-danger reset-video">
+                        <i class="fa fa-times"></i>
+                        Reset
+                    </button>
+
+                    <button class="btn btn-dark reload-video">
+                        <i class="fa fa-refresh"></i>
+                        Reload
+                    </button>
+
                     <button class="btn btn-primary generate-video-gif">
                         <i class="fa fa-gavel"></i>
                         Generate
@@ -262,6 +272,7 @@
                     $('.video-convert-result').hide();
                     $('.video-progress-bar-wrap').hide();
                     $('.video-container-wrap').hide();
+                    $('#video-control-drag').hide();
                     $('#drag-file-container').show();
                     $('#vp-mp4').attr('src', '');
                     $('#vp-mp4').attr('data-video-name', '');
@@ -307,6 +318,9 @@
                             _convert_duration_to_seconds(res_json.video_duration)
 
                             // update video slider range
+                            _video_start_time=0;
+                            _video_end_time=5;
+                            _video_drag_slider.noUiSlider.set([_video_start_time, _video_end_time]);
                             _video_drag_slider.noUiSlider.updateOptions({
                                 range: {
                                     'min': 0,
@@ -393,6 +407,8 @@
                             load_video();
                             play_video();
                             _new_video = false;
+
+                            $('#video-control-drag').fadeIn();
                         }
                     };
                 }
@@ -449,11 +465,24 @@
                     send_request(form_data);
                 }
 
+                // reload video
+                var reload_video_from_page = function(event){
+                    var _video = document.getElementById('video-prop');
+                    _video.load();
+                }
+
+                // reset/remove video from page
+                var reset_video_from_page = function(event){
+                    _reset_all_elements();
+                }
+
                 return {
                     load : function(){
                         _test_browser();
                         _event_container();
                         $('.generate-video-gif').on('click', generate_gif);
+                        $('.reload-video').on('click', reload_video_from_page);
+                        $('.reset-video').on('click', reset_video_from_page);
                         $('.upload-file-bottom').on('click', upload_file_trigger);
                         $('#upload-file-input').on('change', upload_file);
                     }

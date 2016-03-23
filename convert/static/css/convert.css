@@ -155,7 +155,7 @@ a:hover, button:hover {
         font-size: 13px;
         margin-top: -20px;
         color: #15646B; }
-      .wrapper .wrap-2 .file-uploader .generate-video-gif .fa {
+      .wrapper .wrap-2 .file-uploader .generate-video-gif .fa, .wrapper .wrap-2 .file-uploader .reload-video .fa, .wrapper .wrap-2 .file-uploader .reset-video .fa {
         font-size: 16px;
         color: #fff; }
     .wrapper .wrap-2 #video-prop {
@@ -168,30 +168,32 @@ a:hover, button:hover {
       -o-border-radius: 4px;
       border-radius: 4px;
       margin-bottom: 10px; }
-    .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip {
-      position: absolute;
-      top: 24px;
-      left: -2px;
-      background-color: #333;
-      white-space: nowrap;
-      color: #fff;
-      padding: 3px 5px;
-      border-radius: 2px;
-      font-size: 11px; }
-      .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip:before, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip:before {
-        content: "";
+    .wrapper .wrap-2 #video-control-drag {
+      display: none; }
+      .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip {
         position: absolute;
-        display: block;
-        top: -6px;
-        left: 50%;
-        width: 0;
-        height: 0;
-        margin-left: -3px;
-        overflow: hidden;
-        border: 3px solid transparent;
-        border-bottom-color: #333; }
-    .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip:after, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip:after {
-      content: 's'; }
+        top: 24px;
+        left: -2px;
+        background-color: #333;
+        white-space: nowrap;
+        color: #fff;
+        padding: 3px 5px;
+        border-radius: 2px;
+        font-size: 11px; }
+        .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip:before, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip:before {
+          content: "";
+          position: absolute;
+          display: block;
+          top: -6px;
+          left: 50%;
+          width: 0;
+          height: 0;
+          margin-left: -3px;
+          overflow: hidden;
+          border: 3px solid transparent;
+          border-bottom-color: #333; }
+      .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip:after, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip:after {
+        content: 's'; }
     .wrapper .wrap-2 .video-action-tools {
       margin-top: 40px; }
     .wrapper .wrap-2 .noUi-target {

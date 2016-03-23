@@ -197,7 +197,7 @@ a:hover, button:hover{
                 color: #15646B;
             }
 
-            .generate-video-gif{
+            .generate-video-gif, .reload-video, .reset-video{
                 .fa{
                     font-size: 16px;
                     color: #fff;
@@ -213,6 +213,8 @@ a:hover, button:hover{
         }
 
         #video-control-drag{
+            display:none;
+
             .noUi-handle-lower, .noUi-handle-upper{
                 .noUi-tooltip{
                     position: absolute;

@@ -44,42 +44,54 @@ class ConvertVideo(APIView):
         - application/json
         - application/xml
         """
+        self.post_data = request.data
+
         try:
-            self.post_data = request.data
             self.type = self.post_data['type']
-
-            try:
-                # check convert video type
-                VideoConvertType(self.type)
-            except Exception as e:
-                return Response('Convert type error!', status=status.HTTP_400_BAD_REQUEST)
-
-
-            # if type is upload, then upload video to disk
-            if self.type=='upload':
-                self.file_handle = request.data['file']
-                self.save_uploaded_file()
-            else:
-                # download a video from a link
-                if 'link' in self.post_data:
-                    self.link = self.post_data['link']
-                    self.download_video()
-                # this video already exist in our disk
-                elif 'video_name' in self.post_data:
-                    self.video_name = self.post_data['video_name']
-                    self.video_fullpath = self.video_path + self.video_name
         except Exception as e:
-            return Response('Parameters error!', status=status.HTTP_400_BAD_REQUEST)
-       
+            return Response('Parameters error, type is required!', status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            # check video type
+            VideoConvertType(self.type)
+        except Exception as e:
+            return Response('Parameter value of Type is invalid!', status=status.HTTP_400_BAD_REQUEST)
+
+        # dispatch video type
+        self.video_type_dispatch()
+
+        # if not exist file, then return an error message
         if not self.video_name:
-            # if not exist file, then return an error message
-            return Response('Video can not save in our system, please try it later!', status=status.HTTP_400_BAD_REQUEST)
+            return Response('Video upload failed, please try it later!', status=status.HTTP_400_BAD_REQUEST)
+        # if exist video file, analysis this video and get video basic info
         else:
-            # if exist video file, analysis this video and get video basic info
             self.analysis_video()
 
+        # get the response data
+        self.parse_response_data(request)
+        
+        return Response(self.response_data, status=status.HTTP_200_OK)
 
+
+    # dispatch video type
+    def video_type_dispatch(self):
+        # if type is upload, then upload video to disk
+        if self.type=='upload':
+            self.file_handle = self.post_data['file']
+            self.save_uploaded_file()
+        else:
+            # download a video from a link
+            if 'link' in self.post_data:
+                self.link = self.post_data['link']
+                self.download_video()
+            # this video already exist in our disk
+            elif 'video_name' in self.post_data:
+                self.video_name = self.post_data['video_name']
+                self.video_fullpath = self.video_path + self.video_name
+
+
+    # operate response data
+    def parse_response_data(self, request):
         if VideoConvertType(self.type).value == 'gif':
             # convert video to gif
             self.convert_to_gif()
@@ -96,7 +108,6 @@ class ConvertVideo(APIView):
             self.response_file = request.build_absolute_uri('/files/video/') + self.new_video_name
 
         self.response_data['response_file'] = self.response_file    
-        return Response(self.response_data, status=status.HTTP_200_OK)
 
 
     # save uploaded file
