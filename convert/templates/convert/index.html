@@ -267,6 +267,14 @@
                     $('#vp-mp4').attr('data-video-name', '');
                 }
 
+                // convert video duration to seconds
+                var _convert_duration_to_seconds = function(duration){
+                    var video_duration_tmp = duration.split(':');
+                    var seconds = parseInt(video_duration_tmp[2]);
+                    var min_seconds = parseInt(video_duration_tmp[1], 10)*60;
+                    _video_duration = seconds + min_seconds;
+                }
+
                 // send uploaded video data to server
                 var send_request = function(form_data){
                     var xhr = new XMLHttpRequest();
@@ -290,29 +298,30 @@
                         if(!res_json.error){
                             $('#vp-mp4').attr('src', res_json.response_file);
                             $('#vp-mp4').attr('data-video-name', res_json.video_name);
-                            _video_duration = res_json.video_duration.replace("00:00:", "");
+
+                            // load video
                             _new_video = true;
                             load_video();
 
+                            // convert video duration to seconds
+                            _convert_duration_to_seconds(res_json.video_duration)
+
+                            // update video slider range
+                            _video_drag_slider.noUiSlider.updateOptions({
+                                range: {
+                                    'min': 0,
+                                    'max': parseInt(_video_duration)
+                                }
+                            });
+
                             $('.video-container-wrap').show();
                             $('#drag-file-container').hide();
+                            $('.video-progress-bar-wrap').hide();
                         }else{
                             $('.video-container-wrap').hide();
                             $('#drag-file-container').show();
                         }
                     };
-
-                    xhr.onloadend = function(event){                       
-                        $('.video-progress-bar-wrap').hide();
-
-                        // update video slider range
-                        _video_drag_slider.noUiSlider.updateOptions({
-                            range: {
-                                'min': 0,
-                                'max': parseInt(_video_duration)
-                            }
-                        });
-                    }
 
                     xhr.send(form_data);
                 }
@@ -381,8 +390,8 @@
                     // reload new video source
                     _video.onplay = function() {
                         if(_new_video){
-                            _video.load();
-                            _video.play();
+                            load_video();
+                            play_video();
                             _new_video = false;
                         }
                     };
