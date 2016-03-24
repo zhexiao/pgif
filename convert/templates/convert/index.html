@@ -529,16 +529,16 @@
                         return;
                     }
 
-
-                    load_youtube_video();
+                    video_id = 'heycw8rdLlI';
+                    load_youtube_video(video_id);
                 }  
 
 
                 // load youtube video
-                var load_youtube_video = function(){
+                var load_youtube_video = function(video_id){
                     _current_video_type = 'youtube';
                     _youtube_player.loadVideoById({
-                        videoId:'heycw8rdLlI', 
+                        videoId:video_id, 
                         startSeconds:0
                     });
 
