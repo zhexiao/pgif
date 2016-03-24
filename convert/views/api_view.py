@@ -65,7 +65,7 @@ class ConvertVideo(APIView):
         self.parse_response_data(request)
         
         # response to client
-        return Response(self.response_data, status=status.HTTP_200_OK)
+        return Response(self.response_data, status=status.HTTP_200_OK, content_type='application/json')
 
 
     # init cloundinary
@@ -103,7 +103,8 @@ class ConvertVideo(APIView):
         # convert video to gif
         if VideoConvertType(self.type).value == 'gif':        
             self.convert_to_gif()
-            self.response_file = self.clound_gif_url
+            # self.response_file = self.clound_gif_url
+            self.response_file = request.build_absolute_uri('/files/gif/') + self.gif_name
 
         # format video by new requirement
         elif VideoConvertType(self.type).value == 'video':          
@@ -185,7 +186,7 @@ class ConvertVideo(APIView):
  
             self.generate_low_quality_gif()
             # upload to clound
-            self.upload_to_cloundinary(self.gif_fullpath)
+            # self.upload_to_cloundinary(self.gif_fullpath)
         except Exception as e:
             pass     
 
@@ -195,17 +196,17 @@ class ConvertVideo(APIView):
         # most high quality
         palette="/tmp/{0}.png".format( str(uuid.uuid4()) )
 
-        palette_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf "fps=15,scale=320:-1:flags=lanczos,palettegen" -y {3}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette)
+        palette_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf "fps=12,scale=320:-1:flags=lanczos,palettegen" -y {3}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette)
         subprocess.call(palette_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
-        gif_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -i {3} -lavfi "fps=15,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse" -y {4}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette, self.gif_fullpath)
+        gif_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -i {3} -lavfi "fps=12,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse" -y {4}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette, self.gif_fullpath)
         subprocess.call(gif_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
 
     # generate low quality gif
     def generate_low_quality_gif(self):
         # low quality
-        command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -r 15 -vf scale=320:-1 -gifflags +transdiff -y {3} 2>&1'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, self.gif_fullpath)
+        command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -r 12 -vf scale=320:-1 -gifflags +transdiff -y {3} 2>&1'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, self.gif_fullpath)
 
         subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 

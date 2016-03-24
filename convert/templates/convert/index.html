@@ -357,6 +357,15 @@
                     var _gif_time_length = _video_end_time - _video_start_time;
                     var form_data = new FormData();
                     
+                    if($('#vp-mp4').attr('src') == ''){
+                        swal({
+                            title: "Error!",
+                            text: "Please upload a video first.",
+                            type: "error",
+                            confirmButtonText: "Cool" 
+                        });       
+                        return;
+                    }
                     form_data.append('file', _upload_file_handle);
                     form_data.append('type', 'gif');
                     form_data.append('start_timestamps', _video_start_time);
@@ -418,6 +427,17 @@
                 var _read_video_blob_data = function(file){
                     var reader = new FileReader(),
                         mime = file.type;
+
+                    // only support mp4 video
+                    if(mime != 'video/mp4'){
+                        swal({
+                            title: "Error!",
+                            text: "Sorry, we only support mp4 video!",
+                            type: "error",
+                            confirmButtonText: "Cool" 
+                        });      
+                        return;
+                    }
 
                     reader.readAsArrayBuffer(file);
 
