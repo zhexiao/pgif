@@ -8,8 +8,9 @@ This is description of pgif
 - [Installation](#Installation)  
 - [Usage](#Usage)  
 
-## Requirements
+
 <a name="Requirements"/>
+## Requirements
 - Django 1.9.4
 - Django Rest Framework
 - Mysql
@@ -17,9 +18,8 @@ This is description of pgif
 - ffmpeg
 - Cloudinary
 
-
-## Installation
 <a name="Installation"/>
+## Installation
 - VirtualEnv
 ```shell
     $ virtualenv -p python3 env
@@ -65,9 +65,8 @@ This is description of pgif
 ```
 
 
-
-## Usage
 <a name="Usage"/>
+## Usage
 - Running Web Server
 ```shell
     $ python manage.py runserver
