@@ -5,6 +5,7 @@ from rest_framework import status
 from pprint import pprint
 from enum import Enum
 import urllib.request, os, subprocess, uuid, re
+import cloudinary, cloudinary.uploader, cloudinary.api
 
 
 # video convert type enum
@@ -20,6 +21,7 @@ class ConvertVideo(APIView):
         self.video_path = settings.BASE_DIR + '/files/video/'
         self.gif_path = settings.BASE_DIR + '/files/gif/'
         self.response_data = {'error':False}
+        self.init_cloundinary()
 
 
     def post(self, request, format=None):
@@ -73,6 +75,25 @@ class ConvertVideo(APIView):
         return Response(self.response_data, status=status.HTTP_200_OK)
 
 
+    # init cloundinary
+    def init_cloundinary(self):
+        cloudinary.config( 
+            cloud_name = settings.CLOUDINARY_CLOUND_NAME,
+            api_key = settings.CLOUDINARY_API_KEY,
+            api_secret = settings.CLOUDINARY_API_SECRECT
+        )
+
+
+    # upload image to cloundinary
+    def upload_to_cloundinary(self, file):
+        try:
+            res = cloudinary.uploader.upload(file)
+            self.clound_gif_url = res['url']
+        except Exception as e:
+            self.clound_gif_url = None
+        
+
+
     # dispatch video type
     def video_type_dispatch(self):
         # if type is upload, then upload video to disk
@@ -95,7 +116,7 @@ class ConvertVideo(APIView):
         if VideoConvertType(self.type).value == 'gif':
             # convert video to gif
             self.convert_to_gif()
-            self.response_file = request.build_absolute_uri('/files/gif/') + self.gif_name
+            self.response_file = self.clound_gif_url
         elif VideoConvertType(self.type).value == 'video':
             # format video by new requirement
             self.format_to_video()
@@ -175,12 +196,10 @@ class ConvertVideo(APIView):
             except Exception as e:
                 self.start_timestamps = 0
                 self.gif_duration = 5
-
-            
-            if self.gif_duration >=5:
-                self.generate_low_quality_gif()
-            else:
-                self.generate_high_quality_gif()
+ 
+            self.generate_low_quality_gif()
+            # upload to clound
+            self.upload_to_cloundinary(self.gif_fullpath)
         except Exception as e:
             pass     
 
@@ -188,19 +207,22 @@ class ConvertVideo(APIView):
     # generate high quality gif
     def generate_high_quality_gif(self):
         # most high quality
-        palette="/tmp/palette.png"
-        palette_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf fps=15,scale=320:-1:flags=lanczos,palettegen -y {3}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette)
+        palette="/tmp/{0}.png".format( str(uuid.uuid4()) )
+
+        palette_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf "fps=15,scale=320:-1:flags=lanczos,palettegen" -y {3}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette)
         subprocess.call(palette_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
         gif_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -i {3} -lavfi "fps=15,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse" -y {4}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette, self.gif_fullpath)
         subprocess.call(gif_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
+
     # generate low quality gif
     def generate_low_quality_gif(self):
         # low quality
-        command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf scale=300:-1 -gifflags +transdiff -y {3} 2>&1'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, self.gif_fullpath)
+        command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -r 15 -vf scale=320:-1 -gifflags +transdiff -y {3} 2>&1'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, self.gif_fullpath)
 
         subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+
 
     # format video with new requirement
     def format_to_video(self):
@@ -209,7 +231,7 @@ class ConvertVideo(APIView):
             new_video_fullpath = self.video_path + self.new_video_name
 
             # set default video parameters
-            self.frameRate = 24
+            self.frameRate = 20
             self.newWidth = 640
             self.newHeight = 320
             self.videoRate = '200k'

@@ -58,7 +58,10 @@ This is description of pgif
     $ sudo apt-get install ffmpeg
 ```
 
-
+- GIF Clound
+```shell
+    $ pip install cloudinary
+```
 
 
 
