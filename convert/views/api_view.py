@@ -173,22 +173,34 @@ class ConvertVideo(APIView):
                 self.start_timestamps = self.post_data['start_timestamps']
                 self.gif_duration = self.post_data['gif_duration']
             except Exception as e:
-                self.start_timestamps = 5
-                self.gif_duration = 20
+                self.start_timestamps = 0
+                self.gif_duration = 5
 
-            # default gif parameters
-            self.gif_width = 320
-            self.gif_height = 240
-            self.frameRate = 15
-
-            command = 'ffmpeg -i {0} -ss {1} -pix_fmt rgb24 -r {2} -s {3}x{4} -t {5} {6} 2>&1'.format(self.video_fullpath, self.start_timestamps, self.frameRate, self.gif_width, self.gif_height, self.gif_duration, self.gif_fullpath)
-            subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-
-            # remove temporary video file
-            # os.remove(self.video_fullpath)
+            
+            if self.gif_duration >=5:
+                self.generate_low_quality_gif()
+            else:
+                self.generate_high_quality_gif()
         except Exception as e:
             pass     
 
+
+    # generate high quality gif
+    def generate_high_quality_gif(self):
+        # most high quality
+        palette="/tmp/palette.png"
+        palette_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf fps=15,scale=320:-1:flags=lanczos,palettegen -y {3}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette)
+        subprocess.call(palette_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+
+        gif_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -i {3} -lavfi "fps=15,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse" -y {4}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette, self.gif_fullpath)
+        subprocess.call(gif_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+
+    # generate low quality gif
+    def generate_low_quality_gif(self):
+        # low quality
+        command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf scale=300:-1 -gifflags +transdiff -y {3} 2>&1'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, self.gif_fullpath)
+
+        subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
     # format video with new requirement
     def format_to_video(self):
