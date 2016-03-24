@@ -15,6 +15,7 @@ This is description of pgif
 - Mysql
 - Gevent
 - ffmpeg
+- Cloudinary
 
 
 ## Installation
