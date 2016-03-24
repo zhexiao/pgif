@@ -39,11 +39,16 @@
                 <div class="col-md-12"> 
                     <button class="btn btn-purple upload-file-bottom">
                         <i class="fa fa-upload"></i>
-                        Upload File
+                        Upload a File
                     </button>
-                    <form id="upload-file-input-form" enctype="multipart/form-data">
+                    <form id="upload-file-input-form" enctype="multipart/form-data" style="display: none;">
                         <input type="file" name="file" id="upload-file-input" accept="video/mp4"/>
                     </form>
+
+                    <button class="btn btn-purple" data-toggle="modal" data-target="#video-add-link">
+                        <i class="fa fa-external-link"></i>
+                        Add a Link
+                    </button>
                 </div>
             </div>
             <div id="drag-file-container">
@@ -53,11 +58,12 @@
 
             <div class="video-container-wrap">
                 <video id='video-prop' controls>
-                    <source id='vp-mp4' src="" type='video/mp4'>    
-                    <p>Your user agent does not support the HTML5 Video element.</p>
-                </video>
+                    <source id='vp-mp4' src="" type='video/mp4'>
+                </video>               
+                <div id="player-youtube"></div>
                 <div id="video-control-drag"></div>
             </div>
+
 
             <div class="file-uploader-footer clearfix">
                 <div class="col-md-4">
@@ -85,7 +91,42 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- add a link modal -->
+    <div class="modal fade" id="video-add-link" tabindex="-1" role="dialog" aria-labelledby="video-add-link">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">Add A Video Link</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        <ul>
+                            <li><small><i>Youtube Link is supported.</i></small></li>
+                            <li><small><i>Vimeo Link is supported.</i></small></li>
+                        </ul>
+                    </div>
+                    <br>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-external-link"></i></div>
+                            <input type="text" value="" placeholder="Video link ..." class="form-control video-add-link-input">
+                        </div>
+                    </div>             
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary video-add-link-button">Submit</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -222,9 +263,11 @@
             var init_video_parts = function(){
                 var _drag_container = document.getElementById('drag-file-container');
                 var _video = document.getElementById('video-prop');
+                var _youtube_player;
                 var _video_drag_slider = document.getElementById('video-control-drag');
                 var _timeout_id, _video_start_time = 0, _video_end_time = 5, _video_duration = 30;
                 var _upload_file_handle;
+                var _current_video_type;
 
                 // when meta data for the video is loaded
                 _video.onloadedmetadata = function() {     
@@ -275,17 +318,31 @@
                     _video_start_time = data[0],
                     _video_end_time = data[1];
 
-                    // clear timeout
-                    clearTimeout(_timeout_id);
+                    if(_current_video_type == 'youtube'){
+                        _youtube_player.loadVideoById({
+                            videoId:'heycw8rdLlI', 
+                            startSeconds:_video_start_time
+                        });
 
-                    // set start time
-                    _video.currentTime = _video_start_time;
-                    _video.play();
+                        // clear timeout
+                        clearTimeout(_timeout_id);
+                        // paused when reach the end time
+                        _timeout_id = setTimeout(function(){ 
+                            _youtube_player.pauseVideo();
+                        }, (_video_end_time-_video_start_time+1)*1000);
+                    }else{                        
+                        // clear timeout
+                        clearTimeout(_timeout_id);
 
-                    // paused when reach the end time
-                    _timeout_id = setTimeout(function(){ 
-                        _video.pause();
-                    }, (_video_end_time-_video_start_time+1)*1000);
+                        // set start time
+                        _video.currentTime = _video_start_time;
+                        _video.play();
+
+                        // paused when reach the end time
+                        _timeout_id = setTimeout(function(){ 
+                            _video.pause();
+                        }, (_video_end_time-_video_start_time+1)*1000);
+                    }
                 });
 
 
@@ -306,16 +363,10 @@
                     });
                 }
 
-                // loading icon
-                var _fa_loading_icon = function(){
-                    return '<i class="fa fa-spin fa-spinner"></i>';
-                }
-
                 // reset all div
                 var _reset_all_elements = function(){
                     $('.video-convert-result').hide();
                     $('.video-progress-bar-wrap').hide();
-                    $('.video-container-wrap').hide();
                     $('#video-control-drag').hide();
                     $('#drag-file-container').show();
                     $('#vp-mp4').attr('src', '');
@@ -401,26 +452,31 @@
                 }
 
                 // show all video related elements or not
-                var _show_or_hide_video_elements = function(type){
-                    if(type == 'show'){
-                        $('.video-container-wrap').show();
-                        $('#drag-file-container').hide();
-                        $('.video-progress-bar-wrap').hide();
+                var _show_related_video_elements = function(){
+                    if(_current_video_type == 'video'){
+                        $('#video-prop').show();           
                         $('#video-control-drag').fadeIn();
-                    }else{
-                        $('.video-container-wrap').hide();
-                        $('#drag-file-container').show();
-                        $('.video-progress-bar-wrap').show();
-                        $('#video-control-drag').hide();
+
+                        $('#player-youtube').hide();
+                        _youtube_player.pauseVideo();
+                        $('#drag-file-container').hide();
+                    }else if(_current_video_type == 'youtube'){
+                        $('#player-youtube').show();
+                        $('#video-control-drag').fadeIn();
+
+                        $('#video-prop').hide();              
+                        $('#drag-file-container').hide();
                     }
                 }
 
                 // show video preview
                 var _show_video_preview = function(video_blob_url){
+                    _current_video_type = 'video';
+
                     $('#vp-mp4').attr('src', video_blob_url);
                     _video.load();
                
-                    _show_or_hide_video_elements('show');
+                    _show_related_video_elements();
                 }
 
                 // read video blob data
@@ -447,7 +503,7 @@
                             var blob = new Blob([evt.target.result], {type: mime}),     
                                 video_blob_url = (URL || webkitURL).createObjectURL(blob);
                           
-                            _show_video_preview(video_blob_url);    
+                            _show_video_preview(video_blob_url);
                         }
                     }  
                 }
@@ -457,13 +513,77 @@
                     _reset_all_elements();
                 }
 
+
+                // add a video link
+                var add_video_link = function(event){
+                    var $obj = $(event.target),
+                        video_link = $obj.closest('.modal-content').find('.video-add-link-input').val();
+
+                    if(video_link==''){
+                        swal({
+                            title: "Error!",
+                            text: "Sorry, your video link is invalid, please try another one.",
+                            type: "error",
+                            confirmButtonText: "Cool" 
+                        });      
+                        return;
+                    }
+
+
+                    load_youtube_video();
+                }  
+
+
+                // load youtube video
+                var load_youtube_video = function(){
+                    _current_video_type = 'youtube';
+                    _youtube_player.loadVideoById({
+                        videoId:'heycw8rdLlI', 
+                        startSeconds:0
+                    });
+
+                    _reset_video_slider(0, 5, 130);
+                    _show_related_video_elements();
+                }
+
+
+                // youtube video load
+                var init_youtube_video = function(){
+                    var tag = document.createElement('script');
+                    var firstScriptTag = document.getElementsByTagName('script')[0];
+
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); 
+
+                    // this function creates an <iframe> (and YouTube player) after the API code downloads.
+                    // It's must to be global, because youtube api need to call it
+                    window.onYouTubeIframeAPIReady = function() {
+                        _youtube_player = new YT.Player('player-youtube', {
+                            height: '300',
+                            videoId: 'null',
+                            events: {
+                                'onReady': youtube_ready_play
+                            }
+                        });
+                    }
+                    
+                    // The API will call this function when the video player is ready.
+                    var youtube_ready_play = function (event) {
+                        event.target.pauseVideo();
+                    }
+                }
+  
+
+
                 return {
                     load : function(){
                         _test_browser();
+                        init_youtube_video();
                         $('.generate-video-gif').on('click', generate_gif);
                         $('.reset-video').on('click', reset_video_from_page);
                         $('.upload-file-bottom').on('click', upload_file_trigger);
                         $('#upload-file-input').on('change', upload_file);
+                        $('.video-add-link-button').on('click', add_video_link);
                     }
                 }
             }
@@ -530,6 +650,6 @@
         })($);
         
         convert_home_js.bind();
-        convert_home_js.init();      
+        convert_home_js.init();     
     </script>
 {% endblock %}

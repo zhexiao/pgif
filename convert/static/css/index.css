@@ -9411,8 +9411,6 @@ a:hover, button:hover {
           color: #fff; }
       .wrapper .wrap-2 .file-uploader #upload-file-input {
         display: none; }
-      .wrapper .wrap-2 .file-uploader .video-container-wrap {
-        display: none; }
       .wrapper .wrap-2 .file-uploader .video-progress-bar-wrap {
         display: none; }
       .wrapper .wrap-2 .file-uploader .video-convert-result {
@@ -9430,7 +9428,8 @@ a:hover, button:hover {
       .wrapper .wrap-2 .file-uploader .generate-video-gif .fa, .wrapper .wrap-2 .file-uploader .reload-video .fa, .wrapper .wrap-2 .file-uploader .reset-video .fa {
         font-size: 16px;
         color: #fff; }
-    .wrapper .wrap-2 #video-prop {
+    .wrapper .wrap-2 #video-prop, .wrapper .wrap-2 #player-youtube {
+      display: none;
       max-height: 300px;
       border: 1px solid #ddd;
       -khtml-border-radius: 4px;
@@ -9440,6 +9439,8 @@ a:hover, button:hover {
       -o-border-radius: 4px;
       border-radius: 4px;
       margin-bottom: 10px; }
+    .wrapper .wrap-2 #player-youtube {
+      margin-top: 10px; }
     .wrapper .wrap-2 #video-control-drag {
       display: none; }
       .wrapper .wrap-2 #video-control-drag .noUi-handle-lower .noUi-tooltip, .wrapper .wrap-2 #video-control-drag .noUi-handle-upper .noUi-tooltip {

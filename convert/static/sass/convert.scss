@@ -171,10 +171,6 @@ a:hover, button:hover{
                 display:none;
             }
 
-            .video-container-wrap{
-                display:none;
-            }
-
             .video-progress-bar-wrap{
                 display:none;
             }
@@ -205,11 +201,16 @@ a:hover, button:hover{
             }
         }
 
-        #video-prop{
+        #video-prop, #player-youtube{
+            display:none;
             max-height:300px;
             border: 1px solid #ddd;
             @include css3('border-radius', 4px);
             margin-bottom:10px;
+        }
+
+        #player-youtube{
+            margin-top:10px;
         }
 
         #video-control-drag{
