@@ -153,6 +153,7 @@ a:hover, button:hover{
             }
 
             .file-uploader-footer{
+                display:none;
                 text-align: left;
                 margin-top: 40px;
                 @include css3(user-select, none);

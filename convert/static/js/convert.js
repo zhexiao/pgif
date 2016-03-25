@@ -22,6 +22,7 @@ var convert_home_js = (function($){
                 _video_played = true;
 
                 $('#video-control-drag').fadeIn();
+                $('.file-uploader-footer').fadeIn();
             }
         }
 
@@ -118,8 +119,19 @@ var convert_home_js = (function($){
             $('.video-convert-result').hide();
             $('.video-progress-bar-wrap').hide();
             $('#video-control-drag').hide();
+            $('.file-uploader-footer').hide();
+
             $('#drag-file-container').show();
-            $('#vp-mp4').attr('src', '');
+            
+            if(_current_video_type == 'video'){
+                $('#vp-mp4').attr('src', '');
+                $('#video-prop').hide();
+                _video.load();
+            }else if(_current_video_type == 'youtube'){
+                if(_youtube_player && _youtube_player.f != null){
+                    _youtube_player.destroy();
+                }
+            }        
         }
 
         // send uploaded video data to server
@@ -270,6 +282,7 @@ var convert_home_js = (function($){
             _current_video_type = 'video';
             _video_played = false;
             $('.generate-video-gif').attr('data-local-file', '');
+            $('.file-uploader-footer').hide();
 
             // set the video source
             $('#vp-mp4').attr('src', video_blob_url);
@@ -303,6 +316,7 @@ var convert_home_js = (function($){
             $obj.closest('.modal-content').find('.video-add-link-input').val('');
             $('#video-control-drag').hide();
             $('.video-convert-result').hide();
+            $('.file-uploader-footer').hide();
 
             _youtube_video_id = video_link.replace(/.*\?v=/, '');
             load_youtube_video(_youtube_video_id);
@@ -359,8 +373,10 @@ var convert_home_js = (function($){
                 // reset video slider
                 _video_start_time=0;
                 _video_end_time=5
-                _reset_video_slider(_youtube_player.getDuration());            
+                _reset_video_slider(_youtube_player.getDuration());     
+
                 $('#video-control-drag').fadeIn();
+                $('.file-uploader-footer').fadeIn();
             }
         }
 

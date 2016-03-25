@@ -124,6 +124,7 @@ a:hover, button:hover {
         color: #bbb;
         margin-top: 10px; }
       .wrapper .wrap-2 .file-uploader .file-uploader-footer {
+        display: none;
         text-align: left;
         margin-top: 40px;
         -khtml-user-select: none;
