@@ -4,14 +4,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from pprint import pprint
 from enum import Enum
+import simplejson as json
 import urllib.request, os, subprocess, uuid, re
 import cloudinary, cloudinary.uploader, cloudinary.api
 
 
 # video convert type enum
 class VideoConvertType(Enum):
-    gif = 'gif'
+    link = 'link'
     video = 'video'
+    youtube = 'youtube'
 
 
 # convert video
@@ -88,31 +90,52 @@ class ConvertVideo(APIView):
 
     # dispatch video type
     def video_type_dispatch(self):
-        # if type is upload, then upload video to disk
-        if self.type=='gif':
-            self.file_handle = self.post_data['file']
-            self.save_uploaded_file()
-        elif self.type == 'video':
-            # download a video from a link
-            self.link = self.post_data['link']
-            self.download_video()
+        # check whether exist local file
+        self.video_name = self.post_data['local_file']
+        self.video_fullpath = self.video_path + self.video_name
+
+        if not os.path.isfile(self.video_fullpath):
+            # download new file to local
+            if self.type == 'video':
+                self.file_handle = self.post_data['file']
+                self.save_uploaded_file()
+            elif self.type == 'youtube':
+                self.get_youtube_video_link()
+                self.download_video()
+            elif self.type == 'link':
+                # download a video from a link
+                self.link = self.post_data['link']
+                self.download_video()
+                self.analysis_video()
 
 
     # operate response data
     def parse_response_data(self, request):
         # convert video to gif
-        if VideoConvertType(self.type).value == 'gif':        
+        if self.type == 'video' or self.type == 'youtube':        
             self.convert_to_gif()
             # self.response_file = self.clound_gif_url
             self.response_file = request.build_absolute_uri('/files/gif/') + self.gif_name
+            self.response_data['local_file'] = self.video_name    
 
         # format video by new requirement
-        elif VideoConvertType(self.type).value == 'video':          
+        elif self.type == 'link':          
             self.format_to_video()
             self.response_file = request.build_absolute_uri('/files/video/') + self.new_video_name
 
         self.response_data['response_file'] = self.response_file    
 
+
+    def get_youtube_video_link(self):
+        try:
+            request_link = 'https://rxjthjm1pofte.com/info?url=https://www.youtube.com/watch?v={0}'.format(self.post_data['youtube_id'])
+            res = urllib.request.urlopen(request_link)
+            content = res.read().decode('utf8')
+            json_data = json.loads(content)
+            self.link = json_data['url']
+        except Exception as e:
+            raise e
+        
 
     # save uploaded file
     def save_uploaded_file(self):
@@ -130,9 +153,6 @@ class ConvertVideo(APIView):
             self.video_name = str(uuid.uuid4()) +'.mp4'
             self.video_fullpath = self.video_path + self.video_name
             urllib.request.urlretrieve(self.link, self.video_fullpath)
-
-            # analysis video get his basic info
-            self.analysis_video()
         except Exception as e:
             self.video_name = None
         

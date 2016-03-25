@@ -5,7 +5,7 @@ var convert_home_js = (function($){
         var _video = document.getElementById('video-prop');
         var _video_drag_slider = document.getElementById('video-control-drag');
         var _timeout_id, _video_start_time = 0, _video_end_time = 5, _video_duration = 30;
-        var _youtube_player, _youtube_video_id, _youtube_video_loaded = false;
+        var _youtube_player, _youtube_video_id, _video_played = false;
         var _upload_file_handle, _current_video_type;
 
         // when meta data for the video is loaded
@@ -13,6 +13,15 @@ var convert_home_js = (function($){
             _video_duration = _video.duration;
             _reset_video_slider(0, 5, _video_duration);
         };
+
+        // when video play
+        _video.onplay = function(){
+            if( !_video_played ){
+                _video_played = true;
+
+                $('#video-control-drag').fadeIn();
+            }
+        }
 
         // video drag envet
         _drag_container.ondragover = function (event) {
@@ -133,8 +142,10 @@ var convert_home_js = (function($){
                 var res_json = jQuery.parseJSON(xhr.responseText);
                 if(!res_json.error){
                     $('.video-convert-result').show();
-                    $('.vcr-a').attr('href', res_json.response_file).text(res_json.response_file);
                     $('.video-progress-bar-wrap').hide();
+
+                    $('.vcr-a').attr('href', res_json.response_file).text(res_json.response_file);
+                    $('.generate-video-gif').attr('data-local-file', res_json.local_file);
                 }
             };
 
@@ -144,22 +155,35 @@ var convert_home_js = (function($){
    
         // generate gif from video
         var generate_gif = function(event){
-            var _gif_time_length = _video_end_time - _video_start_time;
+            var _gif_time_length = _video_end_time - _video_start_time,
+                local_file = $('.generate-video-gif').attr('data-local-file');
             var form_data = new FormData();
             
-            if($('#vp-mp4').attr('src') == ''){
-                swal({
-                    title: "Error!",
-                    text: "Please upload a video first.",
-                    type: "error",
-                    confirmButtonText: "Cool" 
-                });       
-                return;
+            if(_current_video_type == 'video'){
+                if( $('#vp-mp4').attr('src') == '' ){
+                    swal({
+                        title: "Error!",
+                        text: "Please upload a video first.",
+                        type: "error",
+                        confirmButtonText: "Cool" 
+                    });       
+                    return;
+                }
             }
-            form_data.append('file', _upload_file_handle);
-            form_data.append('type', 'gif');
+            
+
             form_data.append('start_timestamps', _video_start_time);
             form_data.append('gif_duration', _gif_time_length);
+            form_data.append('local_file', local_file);
+
+            if(_current_video_type == 'video'){
+                form_data.append('file', _upload_file_handle);
+                form_data.append('type', 'video');
+            }else if(_current_video_type == 'youtube'){
+                form_data.append('type', 'youtube');
+                form_data.append('youtube_id', _youtube_video_id);
+            }
+           
             send_request(form_data);
         }
 
@@ -194,11 +218,12 @@ var convert_home_js = (function($){
         var _show_related_video_elements = function(){
             if(_current_video_type == 'video'){
                 $('#video-prop').show();           
-                $('#video-control-drag').fadeIn();
 
                 $('#player-youtube').hide();
-                _youtube_player.pauseVideo();
                 $('#drag-file-container').hide();
+                if(_youtube_player && _youtube_player.f != null){
+                    _youtube_player.destroy();
+                }
             }else if(_current_video_type == 'youtube'){
                 $('#player-youtube').show();
 
@@ -241,6 +266,8 @@ var convert_home_js = (function($){
         // show video preview
         var _show_video_preview = function(video_blob_url){
             _current_video_type = 'video';
+            _video_played = false;
+            $('.generate-video-gif').attr('data-local-file', '');
 
             // set the video source
             $('#vp-mp4').attr('src', video_blob_url);
@@ -286,9 +313,13 @@ var convert_home_js = (function($){
         // load youtube video
         var load_youtube_video = function(_youtube_video_id){
             _current_video_type = 'youtube';
-            _youtube_video_loaded = false;
-            _youtube_player.destroy();
+            _video_played = false;
+            $('.generate-video-gif').attr('data-local-file', '');
 
+            if(_youtube_player && _youtube_player.f != null){
+                _youtube_player.destroy();
+            }
+            
             // load new youtube video
             _youtube_player = new YT.Player('player-youtube', {
                 height: '300',
@@ -299,27 +330,18 @@ var convert_home_js = (function($){
                 }
             });
 
-
             // display related video div
             _show_related_video_elements();
         }
 
 
         // youtube video load
-        var init_youtube_video = function(){
+        var init_youtube_video_libs = function(){
             var tag = document.createElement('script');
             var firstScriptTag = document.getElementsByTagName('script')[0];
 
             tag.src = "https://www.youtube.com/iframe_api";
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); 
-
-            // this function creates an <iframe> (and YouTube player) after the API code downloads.
-            // It's must to be global, because youtube api need to call it
-            window.onYouTubeIframeAPIReady = function() {
-                _youtube_player = new YT.Player('player-youtube', {
-                    videoId: 'null',
-                });
-            }          
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);       
         }
 
         // The API will call this function when the video player is ready.
@@ -329,8 +351,8 @@ var convert_home_js = (function($){
 
         // if youtube finished load
         var youtube_state_change = function(event){
-            if (event.data == YT.PlayerState.PLAYING && !_youtube_video_loaded) {
-                _youtube_video_loaded = true;
+            if (event.data == YT.PlayerState.PLAYING && !_video_played) {
+                _video_played = true;
 
                 // reset video slider
                 _reset_video_slider(0, 5, _youtube_player.getDuration());            
@@ -341,7 +363,7 @@ var convert_home_js = (function($){
         return {
             load : function(){
                 _test_browser();
-                init_youtube_video();
+                init_youtube_video_libs();
                 $('.generate-video-gif').on('click', generate_gif);
                 $('.reset-video').on('click', reset_video_from_page);
                 $('.upload-file-bottom').on('click', upload_file_trigger);
