@@ -11,7 +11,9 @@ var convert_home_js = (function($){
         // when meta data for the video is loaded
         _video.onloadedmetadata = function() {     
             _video_duration = _video.duration;
-            _reset_video_slider(0, 5, _video_duration);
+            _video_start_time=0;
+            _video_end_time=5
+            _reset_video_slider(_video_duration);
         };
 
         // when video play
@@ -203,9 +205,9 @@ var convert_home_js = (function($){
 
 
         // reset video slider 
-        var _reset_video_slider = function(starttime, endtime, duration){
+        var _reset_video_slider = function(duration){
             // update video slider range
-            _video_drag_slider.noUiSlider.set([starttime, endtime]);
+            _video_drag_slider.noUiSlider.set([_video_start_time, _video_end_time]);
             _video_drag_slider.noUiSlider.updateOptions({
                 range: {
                     'min': 0,
@@ -355,7 +357,9 @@ var convert_home_js = (function($){
                 _video_played = true;
 
                 // reset video slider
-                _reset_video_slider(0, 5, _youtube_player.getDuration());            
+                _video_start_time=0;
+                _video_end_time=5
+                _reset_video_slider(_youtube_player.getDuration());            
                 $('#video-control-drag').fadeIn();
             }
         }
