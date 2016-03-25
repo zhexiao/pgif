@@ -114,8 +114,8 @@ class ConvertVideo(APIView):
         # convert video to gif
         if self.type == 'video' or self.type == 'youtube':        
             self.convert_to_gif()
-            # self.response_file = self.clound_gif_url
-            self.response_file = request.build_absolute_uri('/files/gif/') + self.gif_name
+            self.response_file = self.clound_gif_url
+            # self.response_file = request.build_absolute_uri('/files/gif/') + self.gif_name
             self.response_data['local_file'] = self.video_name    
 
         # format video by new requirement
@@ -204,9 +204,9 @@ class ConvertVideo(APIView):
                 self.start_timestamps = 0
                 self.gif_duration = 5
  
-            self.generate_low_quality_gif()
+            self.generate_high_quality_gif()
             # upload to clound
-            # self.upload_to_cloundinary(self.gif_fullpath)
+            self.upload_to_cloundinary(self.gif_fullpath)
         except Exception as e:
             pass     
 
