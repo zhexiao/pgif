@@ -76,10 +76,32 @@ This is description of pgif
 
 <a name="Troubleshooting"/>
 ## Troubleshooting
-Trouble shooting
+
 - 413 Request Entity Too Large
 <pre>
 edit nginx configuration (/etc/nginx/nginx.conf), 
 inside http section, 
 change client_max_body_size 1m; to client_max_body_size 100M;
+</pre>
+
+- Nginx Configuration
+<pre>
+server {
+    listen 80;
+    server_name 127.0.0.1;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /vagrant/pgif/convert;
+    }
+
+    location /files/ {
+        root /vagrant/files/;
+    }
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/pgif.sock;
+    }
+}
 </pre>
