@@ -79,5 +79,7 @@ This is description of pgif
 Trouble shooting
 - 413 Request Entity Too Large
 <pre>
-edit nginx configuration (/etc/nginx/nginx.conf), inside http section, change client_max_body_size 1m; to client_max_body_size 100M;
+edit nginx configuration (/etc/nginx/nginx.conf), 
+inside http section, 
+change client_max_body_size 1m; to client_max_body_size 100M;
 </pre>
