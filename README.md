@@ -100,6 +100,11 @@ This is description of pgif
     change client_max_body_size 1m; to client_max_body_size 100M;
 ```
 
+- 502 Bad Gateway
+```html
+   make sure the UWsgi services runing well
+```
+
 - Nginx Configuration
 ```shell
 server {
