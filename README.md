@@ -70,7 +70,23 @@ This is description of pgif
 ## Usage
 - Running Web Server
 ```shell
-    $ python manage.py runserver
+    $ sudo vim /etc/init/pgif.conf:
+
+    description "uWSGI instance to serve myapp"
+    
+    start on runlevel [2345]
+    stop on runlevel [!2345]
+    
+    setuid vagrant
+    setgid www-data
+    
+    script
+        cd /vagrant/pgif
+        uwsgi --ini pgif.ini
+    end script
+    
+    
+    $ sudo start pgif
 ```
 
 
@@ -85,7 +101,7 @@ change client_max_body_size 1m; to client_max_body_size 100M;
 </pre>
 
 - Nginx Configuration
-<pre>
+```shell
 server {
     listen 80;
     server_name 127.0.0.1;
@@ -104,4 +120,4 @@ server {
         uwsgi_pass unix:/tmp/pgif.sock;
     }
 }
-</pre>
+```
