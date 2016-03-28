@@ -66,8 +66,22 @@ var convert_home_js = (function($){
 
         // listening the video slider evnet 
         _video_drag_slider.noUiSlider.on('change', function( data, handle){
-            _video_start_time = data[0],
-            _video_end_time = data[1];
+            var new_start_time = data[0], new_end_time = data[1];
+            if(new_end_time - new_start_time > 30){
+                _video_start_time = 0,
+                _video_end_time = 5;
+                _video_drag_slider.noUiSlider.set([_video_start_time, _video_end_time]);
+                swal({
+                    title: "Error!",
+                    text: "Sorry, gif duration can not more than 30 seconds.",
+                    type: "error",
+                    confirmButtonText: "Cool" 
+                }); 
+            }else{
+                _video_start_time = data[0],
+                _video_end_time = data[1];
+            }
+        
 
             if(_current_video_type == 'youtube'){
                 _youtube_player.loadVideoById({
