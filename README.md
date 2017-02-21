@@ -7,6 +7,7 @@ Convert video to Gif.
 - [Installation](#Installation)  
 - [Usage](#Usage)  
 - [Troubleshooting](#Troubleshooting)  
+- [Sass Command](#SassCommand)  
 
 
 <a name="Requirements"/>
@@ -124,4 +125,10 @@ server {
         uwsgi_pass unix:/tmp/pgif.sock;
     }
 }
+```
+
+<a name="SassCommand"/>
+## Sass Command
+```shell
+$ sass --watch sass/index.scss:css/index.css --no-cache --sourcemap=none --style compressed
 ```

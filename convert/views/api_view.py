@@ -2,11 +2,16 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from pprint import pprint
 from enum import Enum
 import simplejson as json
-import urllib.request, os, subprocess, uuid, re
-import cloudinary, cloudinary.uploader, cloudinary.api
+import urllib.request
+import os
+import subprocess
+import uuid
+import re
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 
 # video convert type enum
@@ -17,13 +22,13 @@ class VideoConvertType(Enum):
 
 
 # convert video
-class ConvertVideo(APIView):    
+class ConvertVideo(APIView):
+
     def __init__(self):
         self.video_path = settings.BASE_DIR + '/files/video/'
         self.gif_path = settings.BASE_DIR + '/files/gif/'
-        self.response_data = {'error':False}
+        self.response_data = {'error': False}
         self.init_cloundinary()
-
 
     def post(self, request, format=None):
         """
@@ -51,13 +56,13 @@ class ConvertVideo(APIView):
 
         try:
             self.type = self.post_data['type']
-        except Exception as e:
+        except:
             return Response('Parameters error, type is required!', status=status.HTTP_400_BAD_REQUEST)
 
         try:
             # check video type
             VideoConvertType(self.type)
-        except Exception as e:
+        except:
             return Response('Parameter value of Type is invalid!', status=status.HTTP_400_BAD_REQUEST)
 
         # dispatch video type
@@ -65,19 +70,17 @@ class ConvertVideo(APIView):
 
         # get the response data
         self.parse_response_data(request)
-        
+
         # response to client
         return Response(self.response_data, status=status.HTTP_200_OK, content_type='application/json')
 
-
     # init cloundinary
     def init_cloundinary(self):
-        cloudinary.config( 
-            cloud_name = settings.CLOUDINARY_CLOUND_NAME,
-            api_key = settings.CLOUDINARY_API_KEY,
-            api_secret = settings.CLOUDINARY_API_SECRECT
+        cloudinary.config(
+            cloud_name=settings.CLOUDINARY_CLOUND_NAME,
+            api_key=settings.CLOUDINARY_API_KEY,
+            api_secret=settings.CLOUDINARY_API_SECRECT
         )
-
 
     # upload image to cloundinary
     def upload_to_cloundinary(self, file):
@@ -85,8 +88,8 @@ class ConvertVideo(APIView):
             res = cloudinary.uploader.upload(file)
             self.clound_gif_url = res['url']
         except Exception as e:
+            print(e)
             self.clound_gif_url = None
-        
 
     # dispatch video type
     def video_type_dispatch(self):
@@ -108,23 +111,24 @@ class ConvertVideo(APIView):
                 self.download_video()
                 self.analysis_video()
 
-
     # operate response data
     def parse_response_data(self, request):
         # convert video to gif
-        if self.type == 'video' or self.type == 'youtube':        
+        if self.type == 'video' or self.type == 'youtube':
             self.convert_to_gif()
-            # self.response_file = self.clound_gif_url
-            self.response_file = request.build_absolute_uri('/files/gif/') + self.gif_name
-            self.response_data['local_file'] = self.video_name    
+
+            # choose what to be the response_file file
+            self.response_file = self.clound_gif_url
+            # self.response_file = request.build_absolute_uri('/files/gif/') + self.gif_name
+
+            self.response_data['local_file'] = self.video_name
 
         # format video by new requirement
-        elif self.type == 'link':          
+        elif self.type == 'link':
             self.format_to_video()
             self.response_file = request.build_absolute_uri('/files/video/') + self.new_video_name
 
-        self.response_data['response_file'] = self.response_file    
-
+        self.response_data['response_file'] = self.response_file
 
     def get_youtube_video_link(self):
         try:
@@ -135,42 +139,39 @@ class ConvertVideo(APIView):
             self.link = json_data['url']
         except Exception as e:
             raise e
-        
 
     # save uploaded file
     def save_uploaded_file(self):
-        self.video_name = str(uuid.uuid4()) +'.mp4'
+        self.video_name = str(uuid.uuid4()) + '.mp4'
         self.video_fullpath = self.video_path + self.video_name
 
         with open(self.video_fullpath, 'wb+') as v_f:
             for chunk in self.file_handle.chunks():
                 v_f.write(chunk)
 
-
     # download video
     def download_video(self):
-        try:          
-            self.video_name = str(uuid.uuid4()) +'.mp4'
+        try:
+            self.video_name = str(uuid.uuid4()) + '.mp4'
             self.video_fullpath = self.video_path + self.video_name
             urllib.request.urlretrieve(self.link, self.video_fullpath)
-        except Exception as e:
+        except:
             self.video_name = None
-        
-        return self.video_name
 
+        return self.video_name
 
     # analysis video info
     def analysis_video(self):
         self.metadata = {}
         try:
-            result = subprocess.Popen(["ffprobe", self.video_fullpath], stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
+            result = subprocess.Popen(["ffprobe", self.video_fullpath], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
             for ldt in result.stdout.readlines():
                 ldt = ldt.strip().decode('utf-8')
 
                 # duration info
-                if  ldt.startswith('Duration'):
-                    self.metadata['duration'] = re.search('Duration: (.*?),', ldt).group(0).split(':',1)[1].strip(' ,')
+                if ldt.startswith('Duration'):
+                    self.metadata['duration'] = re.search('Duration: (.*?),', ldt).group(0).split(':', 1)[1].strip(' ,')
                     self.metadata['bitrate'] = re.search("bitrate: (\d+ kb/s)", ldt).group(0).split(':')[1].strip()
 
                 # video info
@@ -190,7 +191,6 @@ class ConvertVideo(APIView):
         except Exception as e:
             print(e)
 
-
     # convert video to gif image
     def convert_to_gif(self):
         try:
@@ -200,41 +200,43 @@ class ConvertVideo(APIView):
             try:
                 self.start_timestamps = self.post_data['start_timestamps']
                 self.gif_duration = self.post_data['gif_duration']
-            except Exception as e:
+            except:
                 self.start_timestamps = 0
                 self.gif_duration = 5
- 
-            self.generate_low_quality_gif()
-            # upload to clound
-            # self.upload_to_cloundinary(self.gif_fullpath)
-        except Exception as e:
-            pass     
 
+            self.generate_low_quality_gif()
+            
+            # upload to clound
+            self.upload_to_cloundinary(self.gif_fullpath)
+        except:
+            pass
 
     # generate high quality gif
     def generate_high_quality_gif(self):
         # most high quality
-        palette="/tmp/{0}.png".format( str(uuid.uuid4()) )
+        palette = "/tmp/{0}.png".format(str(uuid.uuid4()))
 
-        palette_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf "fps=12,scale=320:-1:flags=lanczos,palettegen" -y {3}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette)
-        subprocess.call(palette_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+        palette_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -vf "fps=12,scale=320:-1:flags=lanczos,palettegen" -y {3}'.format(
+            self.start_timestamps, self.gif_duration, self.video_fullpath, palette)
+        subprocess.call(palette_command, shell=True, stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
-        gif_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -i {3} -lavfi "fps=12,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse" -y {4}'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, palette, self.gif_fullpath)
-        subprocess.call(gif_command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-
+        gif_command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -i {3} -lavfi "fps=12,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse" -y {4}'.format(
+            self.start_timestamps, self.gif_duration, self.video_fullpath, palette, self.gif_fullpath)
+        subprocess.call(gif_command, shell=True, stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
 
     # generate low quality gif
     def generate_low_quality_gif(self):
         # low quality
-        command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -r 12 -vf scale=320:-1 -gifflags +transdiff -y {3} 2>&1'.format(self.start_timestamps, self.gif_duration, self.video_fullpath, self.gif_fullpath)
+        command = 'ffmpeg -v warning -ss {0} -t {1} -i {2} -r 12 -vf scale=320:-1 -gifflags +transdiff -y {3} 2>&1'.format(
+            self.start_timestamps, self.gif_duration, self.video_fullpath, self.gif_fullpath)
 
-        subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-
+        subprocess.call(command, shell=True, stdout=open(
+            os.devnull, "w"), stderr=subprocess.STDOUT)
 
     # format video with new requirement
     def format_to_video(self):
-        try: 
-            self.new_video_name = str(uuid.uuid4()) +'.mp4'
+        try:
+            self.new_video_name = str(uuid.uuid4()) + '.mp4'
             new_video_fullpath = self.video_path + self.new_video_name
 
             # set default video parameters
@@ -244,11 +246,14 @@ class ConvertVideo(APIView):
             self.videoRate = '200k'
             self.audioRate = '64k'
 
-            command = 'ffmpeg -i '+self.video_fullpath+'  -ac 1  -b:a '+self.audioRate+' -b:v '+self.videoRate+' -r '+str(self.frameRate)+' -flags +aic+mv4 -s '+str(self.newWidth)+'x'+str(self.newHeight)+' -y -movflags faststart '+new_video_fullpath+' 2>&1'
+            command = 'ffmpeg -i ' + self.video_fullpath + '  -ac 1  -b:a ' + self.audioRate + ' -b:v ' + self.videoRate + ' -r ' + \
+                str(self.frameRate) + ' -flags +aic+mv4 -s ' + str(self.newWidth) + 'x' + \
+                str(self.newHeight) + ' -y -movflags faststart ' + \
+                new_video_fullpath + ' 2>&1'
 
-            subprocess.call(command, shell=True,  stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
+            subprocess.call(command, shell=True, stdout=open(
+                os.devnull, "w"), stderr=subprocess.STDOUT)
             # remove temporary video file
             os.remove(self.video_fullpath)
         except Exception as e:
             print(e)
-            
