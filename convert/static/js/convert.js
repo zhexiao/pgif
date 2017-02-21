@@ -46,7 +46,18 @@ var convert_home_js = (function($){
             reset_video_from_page();
 
             var files = event.dataTransfer.files;
-            _upload_file_handle = files[0];       
+            _upload_file_handle = files[0];
+
+            if(_upload_file_handle['size'] > 3*1024*1024){
+                swal({
+                    title: "Error!",
+                    text: "Video size must less than 3MB.",
+                    type: "error",
+                    confirmButtonText: "Cool" 
+                });      
+                return;
+            }
+
             _read_video_blob_data(_upload_file_handle)
         }; 
 
@@ -223,6 +234,15 @@ var convert_home_js = (function($){
         // upload file
         var upload_file = function(event){
             var files = document.getElementById('upload-file-input').files;
+            if(files[0]['size'] > 3*1024*1024){
+                swal({
+                    title: "Error!",
+                    text: "Video size must less than 3MB.",
+                    type: "error",
+                    confirmButtonText: "Cool" 
+                });   
+                return;
+            }
             _upload_file_handle = files[0];
 
             reset_video_from_page();
