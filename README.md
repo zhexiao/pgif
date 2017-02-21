@@ -71,11 +71,11 @@ Convert video to Gif.
 - Uwsgi Config
 ```shell
 [uwsgi]
-chdir = /vagrant/pgif
-home = /vagrant/pgif/env
+chdir = /var/www/html/pgif
+home = /root/.pgif
 module = pgif.wsgi:application
 
-uid = vagrant
+uid = root
 gid = www-data
 
 master = true
