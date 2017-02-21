@@ -68,25 +68,67 @@ Convert video to Gif.
 
 <a name="Usage"/>
 ## Usage
-- Running Web Server
+- Uwsgi Config
 ```shell
-    $ sudo vim /etc/init/pgif.conf:
+[uwsgi]
+chdir = /var/www/html/pgif
+home = /root/.pgif
+module = pgif.wsgi:application
 
-    description "uWSGI instance to serve myapp"
+uid = root
+gid = www-data
+
+master = true
+processes = 5
+
+socket = /tmp/pgif.sock
+chmod-socket = 664
+vacuum = true
+```
+
+- Nginx Config
+```shell
+server {
+    listen 80;
+    server_name localhost;
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/pgif.sock;
+    }
     
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-    
-    setuid vagrant
-    setgid www-data
-    
-    script
-        cd /vagrant/pgif
-        uwsgi --ini pgif.ini
-    end script
-    
-    
-    $ sudo start pgif
+    location /static/ {
+      root /var/www/html/pgif/convert;
+    }
+}
+```
+
+- Supervisord Config
+```shell
+[program:pgif]
+command=uwsgi --ini /var/www/html/pgif/pgif.ini
+directory=/var/www/html/pgif
+numprocs=1
+stdout_logfile=/var/log/pgif_out.log
+stderr_logfile=/var/log/pgif_error.log
+autostart=true
+autorestart=true
+startsecs=2
+stopwaitsecs=2
+killasgroup=true
+priority=998
+```
+```shell
+# reread file
+$ sudo supervisorctl reread
+$ sudo supervisorctl update
+
+# restart
+$ sudo service nginx restart
+$ sudo supervisorctl restart pgif
 ```
 
 
