@@ -102,6 +102,28 @@ server {
 }
 ```
 
+- Supervisord Config
+```shell
+[program:pgif]
+command=uwsgi --ini /var/www/html/pgif/pgif.ini
+directory=/var/www/html/pgif
+numprocs=1
+stdout_logfile=/var/log/pgif_out.log
+stderr_logfile=/var/log/pgif_error.log
+autostart=true
+autorestart=true
+startsecs=2
+stopwaitsecs=2
+killasgroup=true
+priority=998
+```
+```shell
+# reread file
+$ sudo supervisorctl reread
+$ sudo supervisorctl update
+```
+
+
 <a name="Troubleshooting"/>
 ## Troubleshooting
 
