@@ -86,6 +86,21 @@ chmod-socket = 664
 vacuum = true
 ```
 
+- Nginx Config
+```shell
+server {
+    listen 80;
+    server_name localhost;
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/pgif.sock;
+    }
+}
+```
 
 <a name="Troubleshooting"/>
 ## Troubleshooting
