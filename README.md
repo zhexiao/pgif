@@ -68,25 +68,22 @@ Convert video to Gif.
 
 <a name="Usage"/>
 ## Usage
-- Running Web Server
+- Uwsgi Config
 ```shell
-    $ sudo vim /etc/init/pgif.conf:
+[uwsgi]
+chdir = /vagrant/pgif
+home = /vagrant/pgif/env
+module = pgif.wsgi:application
 
-    description "uWSGI instance to serve myapp"
-    
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-    
-    setuid vagrant
-    setgid www-data
-    
-    script
-        cd /vagrant/pgif
-        uwsgi --ini pgif.ini
-    end script
-    
-    
-    $ sudo start pgif
+uid = vagrant
+gid = www-data
+
+master = true
+processes = 5
+
+socket = /tmp/pgif.sock
+chmod-socket = 664
+vacuum = true
 ```
 
 
