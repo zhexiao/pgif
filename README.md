@@ -99,6 +99,10 @@ server {
         include uwsgi_params;
         uwsgi_pass unix:/tmp/pgif.sock;
     }
+    
+    location /static/ {
+      root /var/www/html/pgif/convert;
+    }
 }
 ```
 
