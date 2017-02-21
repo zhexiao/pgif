@@ -121,6 +121,10 @@ priority=998
 # reread file
 $ sudo supervisorctl reread
 $ sudo supervisorctl update
+
+# restart
+$ sudo service nginx restart
+$ sudo supervisorctl restart pgif
 ```
 
 
