@@ -1,7 +1,6 @@
 # pgif
 
-This is description of pgif
-
+Convert video to Gif.
 
 ## Table of Contents  
 - [Requirements](#Requirements)  
