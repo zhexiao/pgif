@@ -10,7 +10,6 @@ Convert video to Gif.
 - [Sass Command](#SassCommand)  
 
 
-<a name="Requirements"/>
 ## Requirements
 - Django 1.9.4
 - Django Rest Framework
@@ -19,7 +18,7 @@ Convert video to Gif.
 - ffmpeg
 - Cloudinary
 
-<a name="Installation"/>
+
 ## Installation
 - VirtualEnv
 ```shell
@@ -66,7 +65,6 @@ Convert video to Gif.
 ```
 
 
-<a name="Usage"/>
 ## Usage
 - Uwsgi Config
 ```shell
@@ -132,7 +130,6 @@ $ sudo supervisorctl restart pgif
 ```
 
 
-<a name="Troubleshooting"/>
 ## Troubleshooting
 
 - 413 Request Entity Too Large
@@ -169,7 +166,6 @@ server {
 }
 ```
 
-<a name="SassCommand"/>
 ## Sass Command
 ```shell
 $ sass --watch sass/index.scss:css/index.css --no-cache --sourcemap=none --style compressed
